@@ -38,7 +38,9 @@ body {
   font-weight: 800;
   letter-spacing: 0px;
   background: linear-gradient(90deg, #4f46e5, #8b5cf6, #ec4899);
+  background-clip: text;
   -webkit-background-clip: text;
+  color: transparent;
   -webkit-text-fill-color: transparent;
   text-shadow: 0 8px 20px rgba(139, 92, 246, 0.25);
 }
@@ -355,4 +357,76 @@ body {
 .main-content {
   flex: 1;
   min-width: 0;
+}
+
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 460px;
+  padding: 42px;
+  border-radius: 26px;
+  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid rgba(168, 142, 255, 0.35);
+  box-shadow: 0 20px 45px rgba(99, 102, 241, 0.18);
+  text-align: center;
+}
+
+.auth-card h1 {
+  margin: 0 0 12px;
+  font-size: 36px;
+  line-height: 1.2;
+  font-weight: 800;
+  background: linear-gradient(90deg, #4f46e5, #8b5cf6, #ec4899);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.auth-card p {
+  margin-bottom: 28px;
+  color: #475569;
+  font-size: 16px;
+}
+
+.auth-card form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.auth-card input {
+  width: 100%;
+  padding: 15px 18px;
+  border-radius: 14px;
+  border: 1px solid #dbe4f0;
+  font-size: 16px;
+  outline: none;
+  background: #f8fafc;
+}
+
+.auth-card input:focus {
+  border-color: #8b5cf6;
+  box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.12);
+}
+
+.auth-card button {
+  border: none;
+  padding: 15px;
+  border-radius: 14px;
+  background: linear-gradient(90deg, #6d28d9, #0ea5e9);
+  color: white;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 12px 26px rgba(59, 130, 246, 0.3);
+}
+
+.auth-card button:hover {
+  transform: translateY(-2px);
 }
