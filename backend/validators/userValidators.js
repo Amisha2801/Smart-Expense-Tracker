@@ -4,6 +4,12 @@ export function assertRegisterInput({ email, password, name }) {
   if (!email || !password || !name) {
     throw AppError.badRequest("email, password, and name are required");
   }
+
+  if (password.length < 6) {
+    throw AppError.badRequest(
+      "Password must be at least 6 characters long"
+    );
+  }
 }
 
 export function assertLoginInput({ email, password }) {
