@@ -5,10 +5,14 @@ import express from "express";
 import { runMigrations } from "./db/migrate.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 import apiRoutes from "./routes/index.js";
+import cors from "cors";
 // import { configDotenv } from "dotenv";
 
 
 const app = express();
+app.use(cors({
+  origin: "http://localhost:5173",
+}));
 
 app.use(express.json());
 
