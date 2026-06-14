@@ -1,16 +1,45 @@
 import { useState } from "react";
 import { loginUser } from "../api/authApi";
+import { useNavigate } from "react-router-dom";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [message, setMessage] = useState("");
+
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    const data = await loginUser(email, password);
+    try {
+      setError("");
+      setMessage("");
 
-    console.log("Login response:", data);
+      const data = await loginUser(email, password);
+
+      console.log("Login response:", data);
+
+      if (data.error) {
+        setError("Invalid email or password. Please try again.");
+        return;
+      }
+
+      if (data.data?.token) {
+        localStorage.setItem("token", data.data.token);
+      }
+
+      setMessage("Login successful.");
+
+      setTimeout(() => {
+        navigate("/");
+      }, 1000);
+
+    } catch (err) {
+      console.error("Login failed:", err);
+      setError("Unable to connect to the server. Please try again later.");
+    }
   };
 
   return (
@@ -34,10 +63,15 @@ function Login() {
             onChange={(e) => setPassword(e.target.value)}
           />
 
-          <button type="submit">
-            Login
-          </button>
+          {error && <p className="auth-error">{error}</p>}
+          {message && <p className="auth-success">{message}</p>}
+
+          <button type="submit">Login</button>
         </form>
+
+        <p className="auth-link-text">
+          Forgot password? This feature will be added later.
+        </p>
       </div>
     </div>
   );
