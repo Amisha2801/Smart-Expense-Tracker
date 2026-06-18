@@ -186,10 +186,10 @@ function Transactions() {
         {message && <p className="auth-success">{message}</p>}
 
         <div className="budget-form-section">
-          <h3>🏦 First, add an account</h3>
+          <h3>🏦 Where does your money live?</h3>
 
           <p className="budget-subtitle">
-            Add where your money is coming from before tracking expenses.
+            Let's start by adding an account before tracking expenses.
           </p>
 
           <form className="budget-form" onSubmit={handleCreateAccount}>
@@ -202,7 +202,7 @@ function Transactions() {
 
             <input
               type="number"
-              placeholder="Starting Balance"
+              placeholder="Balance"
               value={startingBalance}
               onChange={(e) => setStartingBalance(e.target.value)}
             />
@@ -212,10 +212,10 @@ function Transactions() {
         </div>
 
         <div className="budget-form-section">
-          <h3>🧾 Add an expense</h3>
+          <h3>💸 Where did today's money disappear?</h3>
 
           <p className="budget-subtitle">
-            Log where your money went so your budget stays honest.
+            Let's keep track before future-you starts asking questions 😅
           </p>
 
           <form
