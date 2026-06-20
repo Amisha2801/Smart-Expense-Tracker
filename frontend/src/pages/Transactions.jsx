@@ -182,8 +182,7 @@ function Transactions() {
           <h2>Track Your Spending</h2>
         </div>
 
-        {error && <p className="auth-error">{error}</p>}
-        {message && <p className="auth-success">{message}</p>}
+
 
         <div className="budget-form-section">
           <h3>🏦 Where does your money live?</h3>
@@ -272,6 +271,9 @@ function Transactions() {
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
             />
+
+                    {error && <p className="auth-error">{error}</p>}
+        {message && <p className="auth-success">{message}</p>}
 
             <button type="submit">Add Expense</button>
           </form>

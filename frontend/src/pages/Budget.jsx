@@ -195,8 +195,7 @@ function Budget() {
           <h2>Your Budgets</h2>
         </div>
 
-        {error && <p className="auth-error">{error}</p>}
-        {message && <p className="auth-success">{message}</p>}
+
 
         <div className="budget-form-section">
           <h3>💸 Wondering where your money goes? 🤔</h3>
@@ -260,6 +259,9 @@ function Budget() {
               value={budgetNotes}
               onChange={(e) => setBudgetNotes(e.target.value)}
             />
+            
+        {error && <p className="auth-error">{error}</p>}
+        {message && <p className="auth-success">{message}</p>}
 
             <button type="submit">Create Budget</button>
           </form>
