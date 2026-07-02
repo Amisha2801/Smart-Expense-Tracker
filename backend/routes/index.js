@@ -1,4 +1,5 @@
 import { Router } from "express";
+import dashboardRoutes from "./dashboardRoutes.js";
 
 import accountRoutes from "./accountRoutes.js";
 import budgetRoutes from "./budgetRoutes.js";
@@ -13,5 +14,6 @@ router.use("/accounts", accountRoutes);
 router.use("/categories", categoryRoutes);
 router.use("/budgets", budgetRoutes);
 router.use("/transactions", transactionRoutes);
+router.use("/dashboard", dashboardRoutes);
 
 export default router;
