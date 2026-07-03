@@ -17,7 +17,7 @@ function Dashboard() {
       <section className="summary-grid">
         <div className="summary-card purple-card">
           <div className="card-icon">💳</div>
-          <div>
+          <div className="summary-card-content">
             <h3>Total Expenses</h3>
             <p>$3,000</p>
           </div>
@@ -25,7 +25,7 @@ function Dashboard() {
 
         <div className="summary-card green-card">
           <div className="card-icon">💰</div>
-          <div>
+          <div className="summary-card-content">
             <h3>Monthly Budget</h3>
             <p>$7,000</p>
           </div>
@@ -33,7 +33,7 @@ function Dashboard() {
 
         <div className="summary-card orange-card">
           <div className="card-icon">📊</div>
-          <div>
+          <div className="summary-card-content">
             <h3>Remaining Budget</h3>
             <p>$4,000</p>
           </div>
@@ -41,9 +41,14 @@ function Dashboard() {
       </section>
 
       <section className="transactions-card">
-        <div className="transactions-header">
+        <div className="section-header">
           <div className="card-icon small-icon">📄</div>
-          <h2>Recent Transactions</h2>
+          <div className="section-header-text">
+            <h2>Recent Transactions</h2>
+            <p className="section-subtitle">
+              Your latest activity will show up here.
+            </p>
+          </div>
         </div>
 
         <div className="empty-state">

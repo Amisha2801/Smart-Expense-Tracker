@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { loginUser } from "../api/authApi";
 import { useNavigate } from "react-router-dom";
+import StatusMessage from "../components/StatusMessage";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -48,6 +49,8 @@ function Login() {
         <h1>Welcome Back</h1>
         <p>Login to your Smart Expense Tracker account</p>
 
+        <StatusMessage error={error} message={message} />
+
         <form onSubmit={handleLogin}>
           <input
             type="email"
@@ -62,9 +65,6 @@ function Login() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-
-          {error && <p className="auth-error">{error}</p>}
-          {message && <p className="auth-success">{message}</p>}
 
           <button type="submit">Login</button>
         </form>

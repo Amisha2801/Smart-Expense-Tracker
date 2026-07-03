@@ -6,12 +6,14 @@ import {
   getBudgets,
   getCategories,
 } from "../api/budgetApi";
+import StatusMessage from "../components/StatusMessage";
 
 function Budget() {
   const [categories, setCategories] = useState([]);
   const [budgets, setBudgets] = useState([]);
 
   const [categoryName, setCategoryName] = useState("");
+  const [categoryKind, setCategoryKind] = useState("expense");
   const categoryIcon = "💰";
 
   const [selectedCategoryId, setSelectedCategoryId] = useState("");
@@ -93,8 +95,9 @@ function Budget() {
 
       const data = await createCategory({
         name: categoryName,
+        kind: categoryKind,
         icon: categoryIcon,
-        color: "#8b5cf6",
+        color: categoryKind === "income" ? "#10b981" : "#8b5cf6",
       });
 
       if (data.error) {
@@ -104,6 +107,7 @@ function Budget() {
 
       setMessage("Category created successfully.");
       setCategoryName("");
+      setCategoryKind("expense");
 
       await loadBudgetData();
     } catch (err) {
@@ -190,21 +194,28 @@ function Budget() {
       </div>
 
       <div className="transactions-card">
-        <div className="transactions-header">
+        <div className="section-header">
           <div className="card-icon small-icon">📋</div>
-          <h2>Your Budgets</h2>
+          <div className="section-header-text">
+            <h2>Your Budgets</h2>
+            <p className="section-subtitle">
+              Create categories and monthly limits to stay on track.
+            </p>
+          </div>
         </div>
 
-
+        <StatusMessage error={error} message={message} />
 
         <div className="budget-form-section">
-          <h3>💸 Wondering where your money goes? 🤔</h3>
+          <h3 className="form-section-title">
+            💸 Wondering where your money goes? 🤔
+          </h3>
 
-          <p className="budget-subtitle">
+          <p className="form-section-subtitle">
             Let's find out 😉 Start by creating a category.
           </p>
 
-          <form className="budget-form" onSubmit={handleCreateCategory}>
+          <form className="budget-form budget-form-triple" onSubmit={handleCreateCategory}>
             <input
               type="text"
               placeholder="Category Name, e.g. Food"
@@ -212,14 +223,22 @@ function Budget() {
               onChange={(e) => setCategoryName(e.target.value)}
             />
 
+            <select
+              value={categoryKind}
+              onChange={(e) => setCategoryKind(e.target.value)}
+            >
+              <option value="expense">Expense</option>
+              <option value="income">Income</option>
+            </select>
+
             <button type="submit">Add Category</button>
           </form>
         </div>
 
         <div className="budget-form-section">
-          <h3>🧾 Give your money a game plan</h3>
+          <h3 className="form-section-title">🧾 Give your money a game plan</h3>
 
-          <p className="budget-subtitle">
+          <p className="form-section-subtitle">
             💸 Pick a category, set a limit, and keep future-you thankful 😇
           </p>
 
@@ -233,11 +252,13 @@ function Budget() {
             >
               <option value="">Choose a category</option>
 
-              {categories.map((category) => (
-                <option key={category.id} value={category.id}>
-                  💰 {category.name}
-                </option>
-              ))}
+              {categories
+                .filter((category) => category.kind === "expense")
+                .map((category) => (
+                  <option key={category.id} value={category.id}>
+                    💰 {category.name}
+                  </option>
+                ))}
             </select>
 
             <input
@@ -259,9 +280,6 @@ function Budget() {
               value={budgetNotes}
               onChange={(e) => setBudgetNotes(e.target.value)}
             />
-            
-        {error && <p className="auth-error">{error}</p>}
-        {message && <p className="auth-success">{message}</p>}
 
             <button type="submit">Create Budget</button>
           </form>
@@ -304,7 +322,7 @@ function Budget() {
                     <div className="budget-card" key={budget.id}>
                       <div className="budget-card-icon">💰</div>
 
-                      <div>
+                      <div className="budget-card-text">
                         <h3>{category?.name || "Category"}</h3>
                         <p>{formatMonth(budget.period_month)}</p>
                       </div>

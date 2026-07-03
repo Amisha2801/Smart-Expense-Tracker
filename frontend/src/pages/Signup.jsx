@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { registerUser } from "../api/authApi";
+import StatusMessage from "../components/StatusMessage";
 
 function Signup() {
   const [name, setName] = useState("");
@@ -44,6 +45,8 @@ function Signup() {
         <h1>Create Account</h1>
         <p>Sign up to start tracking your expenses</p>
 
+        <StatusMessage error={error} message={message} />
+
         <form onSubmit={handleSignup}>
           <input
             type="text"
@@ -72,9 +75,6 @@ function Signup() {
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
           />
-
-          {error && <p className="auth-error">{error}</p>}
-          {message && <p className="auth-success">{message}</p>}
 
           <button type="submit">Sign Up</button>
         </form>

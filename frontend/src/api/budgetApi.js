@@ -18,13 +18,13 @@ export async function getCategories() {
   return data;
 }
 
-export async function createCategory({ name, icon, color }) {
+export async function createCategory({ name, kind = "expense", icon, color }) {
   const response = await fetch(`${API_URL}/categories`, {
     method: "POST",
     headers: getAuthHeaders(),
     body: JSON.stringify({
       name,
-      kind: "expense",
+      kind,
       icon: icon || "💰",
       color: color || "#8b5cf6",
     }),
@@ -34,8 +34,12 @@ export async function createCategory({ name, icon, color }) {
   return data;
 }
 
-export async function getBudgets() {
-  const response = await fetch(`${API_URL}/budgets`, {
+export async function getBudgets(periodMonth) {
+  const query = periodMonth
+    ? `?period_month=${encodeURIComponent(periodMonth)}`
+    : "";
+
+  const response = await fetch(`${API_URL}/budgets${query}`, {
     headers: getAuthHeaders(),
   });
 

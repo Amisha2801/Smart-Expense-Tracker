@@ -7,6 +7,7 @@ import {
   getAccounts,
   getTransactions,
 } from "../api/transactionApi";
+import StatusMessage from "../components/StatusMessage";
 
 function Transactions() {
   const [accounts, setAccounts] = useState([]);
@@ -16,6 +17,7 @@ function Transactions() {
   const [accountName, setAccountName] = useState("");
   const [startingBalance, setStartingBalance] = useState("");
 
+  const [transactionType, setTransactionType] = useState("expense");
   const [selectedAccountId, setSelectedAccountId] = useState("");
   const [selectedCategoryId, setSelectedCategoryId] = useState("");
   const [amount, setAmount] = useState("");
@@ -121,7 +123,7 @@ function Transactions() {
       const data = await createTransaction({
         accountId: selectedAccountId,
         categoryId: selectedCategoryId,
-        type: "expense",
+        type: transactionType,
         amountDollars: amount,
         occurredOn,
         payee,
@@ -133,7 +135,11 @@ function Transactions() {
         return;
       }
 
-      setMessage("Transaction created successfully.");
+      setMessage(
+        transactionType === "income"
+          ? "Income added successfully."
+          : "Expense added successfully."
+      );
       setSelectedAccountId("");
       setSelectedCategoryId("");
       setAmount("");
@@ -169,6 +175,10 @@ function Transactions() {
     }
   };
 
+  const categoryOptions = categories.filter(
+    (category) => category.kind === transactionType
+  );
+
   return (
     <div className="dashboard-page">
       <div className="hero-title">
@@ -177,21 +187,26 @@ function Transactions() {
       </div>
 
       <div className="transactions-card">
-        <div className="transactions-header">
+        <div className="section-header">
           <div className="card-icon small-icon">💸</div>
-          <h2>Track Your Spending</h2>
+          <div className="section-header-text">
+            <h2>Track Your Spending</h2>
+            <p className="section-subtitle">
+              Add accounts, expenses, and income to keep your ledger up to date.
+            </p>
+          </div>
         </div>
 
-
+        <StatusMessage error={error} message={message} />
 
         <div className="budget-form-section">
-          <h3>🏦 Where does your money live?</h3>
+          <h3 className="form-section-title">🏦 Where does your money live?</h3>
 
-          <p className="budget-subtitle">
+          <p className="form-section-subtitle">
             Let's start by adding an account before tracking expenses.
           </p>
 
-          <form className="budget-form" onSubmit={handleCreateAccount}>
+          <form className="budget-form budget-form-triple" onSubmit={handleCreateAccount}>
             <input
               type="text"
               placeholder="Account Name, e.g. Checking"
@@ -211,11 +226,44 @@ function Transactions() {
         </div>
 
         <div className="budget-form-section">
-          <h3>💸 Where did today's money disappear?</h3>
+          <h3 className="form-section-title">
+            💸 Where did today's money go — or come from?
+          </h3>
 
-          <p className="budget-subtitle">
-            Let's keep track before future-you starts asking questions 😅
+          <p className="form-section-subtitle">
+            Log an expense or income to keep your ledger up to date 😅
           </p>
+
+          <div className="type-toggle" role="group" aria-label="Transaction type">
+            <button
+              type="button"
+              className={
+                transactionType === "expense"
+                  ? "type-toggle-option active"
+                  : "type-toggle-option"
+              }
+              onClick={() => {
+                setTransactionType("expense");
+                setSelectedCategoryId("");
+              }}
+            >
+              💳 Expense
+            </button>
+            <button
+              type="button"
+              className={
+                transactionType === "income"
+                  ? "type-toggle-option active income"
+                  : "type-toggle-option"
+              }
+              onClick={() => {
+                setTransactionType("income");
+                setSelectedCategoryId("");
+              }}
+            >
+              💵 Income
+            </button>
+          </div>
 
           <form
             className="budget-form budget-form-wide"
@@ -237,10 +285,14 @@ function Transactions() {
               value={selectedCategoryId}
               onChange={(e) => setSelectedCategoryId(e.target.value)}
             >
-              <option value="">Choose category</option>
-              {categories.map((category) => (
+              <option value="">
+                {categoryOptions.length > 0
+                  ? "Choose category"
+                  : `No ${transactionType} categories yet`}
+              </option>
+              {categoryOptions.map((category) => (
                 <option key={category.id} value={category.id}>
-                  💰 {category.name}
+                  {transactionType === "income" ? "💵" : "💰"} {category.name}
                 </option>
               ))}
             </select>
@@ -272,10 +324,9 @@ function Transactions() {
               onChange={(e) => setNotes(e.target.value)}
             />
 
-                    {error && <p className="auth-error">{error}</p>}
-        {message && <p className="auth-success">{message}</p>}
-
-            <button type="submit">Add Expense</button>
+            <button type="submit">
+              {transactionType === "income" ? "Add Income" : "Add Expense"}
+            </button>
           </form>
         </div>
 
@@ -290,13 +341,21 @@ function Transactions() {
               const category = categories.find(
                 (cat) => cat.id === transaction.category_id
               );
+              const isIncome = transaction.type === "income";
+              const amount = (transaction.amount_cents / 100).toFixed(2);
 
               return (
                 <div className="budget-card" key={transaction.id}>
-                  <div className="budget-card-icon">💳</div>
+                  <div className="budget-card-icon">
+                    {isIncome ? "💵" : "💳"}
+                  </div>
 
-                  <div>
-                    <h3>{transaction.payee || category?.name || "Expense"}</h3>
+                  <div className="budget-card-text">
+                    <h3>
+                      {transaction.payee ||
+                        category?.name ||
+                        (isIncome ? "Income" : "Expense")}
+                    </h3>
                     <p>
                       {category?.name || "Category"} •{" "}
                       {formatDate(transaction.occurred_on)}
@@ -304,8 +363,14 @@ function Transactions() {
                   </div>
 
                   <div className="budget-card-actions">
-                    <div className="budget-card-amount">
-                      ${(transaction.amount_cents / 100).toFixed(2)}
+                    <div
+                      className={
+                        isIncome
+                          ? "budget-card-amount income"
+                          : "budget-card-amount"
+                      }
+                    >
+                      {isIncome ? "+" : "-"}${amount}
                     </div>
 
                     <button
