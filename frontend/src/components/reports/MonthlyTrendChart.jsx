@@ -8,7 +8,12 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { EmptyState } from "../../design-system/components";
 import { formatCents } from "../../utils/moneyUtils";
+import { CalendarRange } from "lucide-react";
+
+const AXIS_TICK = { fontSize: 12, fill: "#8a857a", fontFamily: "'Hanken Grotesk', sans-serif" };
+const LEGEND_STYLE = { fontSize: 13, fontFamily: "'Hanken Grotesk', sans-serif", color: "#57534a" };
 
 function TrendTooltip({ active, payload }) {
   if (!active || !payload?.length) {
@@ -36,10 +41,9 @@ function MonthlyTrendChart({ data }) {
 
   if (!hasActivity) {
     return (
-      <div className="reports-chart-empty">
-        <div className="empty-icon">📆</div>
-        <p>No activity in the last 6 months.</p>
-      </div>
+      <EmptyState icon={<CalendarRange />}>
+        No activity in the last 6 months.
+      </EmptyState>
     );
   }
 
@@ -53,16 +57,16 @@ function MonthlyTrendChart({ data }) {
   return (
     <ResponsiveContainer width="100%" height={300}>
       <BarChart data={chartData} margin={{ top: 8, right: 8, left: 8, bottom: 8 }}>
-        <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-        <XAxis dataKey="label" tick={{ fontSize: 12 }} />
+        <CartesianGrid strokeDasharray="3 3" stroke="#e6e1d5" />
+        <XAxis dataKey="label" tick={AXIS_TICK} />
         <YAxis
           tickFormatter={(value) => `$${(value / 100).toFixed(0)}`}
-          tick={{ fontSize: 12 }}
+          tick={AXIS_TICK}
         />
         <Tooltip content={<TrendTooltip />} />
-        <Legend />
-        <Bar dataKey="Income" fill="#10b981" radius={[6, 6, 0, 0]} />
-        <Bar dataKey="Expenses" fill="#7c3aed" radius={[6, 6, 0, 0]} />
+        <Legend wrapperStyle={LEGEND_STYLE} />
+        <Bar dataKey="Income" fill="#3f6f4f" radius={[6, 6, 0, 0]} />
+        <Bar dataKey="Expenses" fill="#c26a3d" radius={[6, 6, 0, 0]} />
       </BarChart>
     </ResponsiveContainer>
   );

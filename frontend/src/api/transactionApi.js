@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:5000/api";
+import { API_BASE_URL } from "./config";
 
 function getAuthHeaders() {
   const token = localStorage.getItem("token");
@@ -10,7 +10,7 @@ function getAuthHeaders() {
 }
 
 export async function getAccounts() {
-  const response = await fetch(`${API_URL}/accounts`, {
+  const response = await fetch(`${API_BASE_URL}/accounts`, {
     headers: getAuthHeaders(),
   });
 
@@ -19,7 +19,7 @@ export async function getAccounts() {
 }
 
 export async function createAccount({ name, type, startingBalanceDollars }) {
-  const response = await fetch(`${API_URL}/accounts`, {
+  const response = await fetch(`${API_BASE_URL}/accounts`, {
     method: "POST",
     headers: getAuthHeaders(),
     body: JSON.stringify({
@@ -35,7 +35,7 @@ export async function createAccount({ name, type, startingBalanceDollars }) {
 }
 
 export async function getTransactions() {
-  const response = await fetch(`${API_URL}/transactions`, {
+  const response = await fetch(`${API_BASE_URL}/transactions`, {
     headers: getAuthHeaders(),
   });
 
@@ -52,7 +52,7 @@ export async function createTransaction({
   payee,
   notes,
 }) {
-  const response = await fetch(`${API_URL}/transactions`, {
+  const response = await fetch(`${API_BASE_URL}/transactions`, {
     method: "POST",
     headers: getAuthHeaders(),
     body: JSON.stringify({
@@ -72,7 +72,7 @@ export async function createTransaction({
 }
 export async function deleteTransaction(transactionId) {
   const response = await fetch(
-    `${API_URL}/transactions/${transactionId}`,
+    `${API_BASE_URL}/transactions/${transactionId}`,
     {
       method: "DELETE",
       headers: getAuthHeaders(),

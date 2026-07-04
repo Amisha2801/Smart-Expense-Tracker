@@ -1,0 +1,32 @@
+.ds-empty-state {
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: var(--space-6);
+  color: var(--muted);
+}
+
+.ds-empty-state__icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--surface2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted);
+}
+
+.ds-empty-state__icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.ds-empty-state p {
+  font: var(--text-body);
+  color: var(--ink2);
+  margin: 0;
+}

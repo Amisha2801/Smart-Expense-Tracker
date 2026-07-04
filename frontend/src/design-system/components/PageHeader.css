@@ -1,0 +1,28 @@
+.ds-page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: var(--space-7);
+  margin-bottom: var(--space-12);
+}
+
+.ds-page-header__eyebrow {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.ds-page-header__title {
+  font: var(--text-h1);
+  color: var(--ink);
+  margin: var(--space-2) 0 0;
+}
+
+.ds-page-header__subtitle {
+  font: var(--text-body);
+  color: var(--ink2);
+  margin: var(--space-3) 0 0;
+}

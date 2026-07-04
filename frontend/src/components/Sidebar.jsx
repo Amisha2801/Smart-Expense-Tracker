@@ -1,4 +1,17 @@
 import { NavLink, useNavigate } from "react-router-dom";
+import {
+  Wallet,
+  LayoutDashboard,
+  ReceiptText,
+  PiggyBank,
+  ChartPie,
+  Landmark,
+  LogIn,
+  UserPlus,
+  LogOut,
+} from "lucide-react";
+import { NavItem } from "../design-system/components";
+import "./Sidebar.css";
 
 function Sidebar() {
   const navigate = useNavigate();
@@ -11,82 +24,37 @@ function Sidebar() {
 
   return (
     <aside className="sidebar">
+      <div className="sidebar-logo">
+        <div className="sidebar-logo__mark">
+          <Wallet />
+        </div>
+        <div className="sidebar-logo__text">
+          <div className="sidebar-logo__name">Ledger</div>
+          <div className="sidebar-logo__tagline">Expense tracker</div>
+        </div>
+      </div>
+
       <nav className="sidebar-nav">
         {token ? (
           <>
-            <NavLink
-              className={({ isActive }) =>
-                isActive ? "nav-card active" : "nav-card"
-              }
-              to="/"
-            >
-              <span className="nav-icon">🏠</span>
-              <span>Dashboard</span>
-            </NavLink>
-
-            <NavLink
-              className={({ isActive }) =>
-                isActive ? "nav-card active" : "nav-card"
-              }
-              to="/transactions"
-            >
-              <span className="nav-icon blue">💳</span>
-              <span>Transactions</span>
-            </NavLink>
-
-            <NavLink
-              className={({ isActive }) =>
-                isActive ? "nav-card active" : "nav-card"
-              }
-              to="/budget"
-            >
-              <span className="nav-icon green">💰</span>
-              <span>Budget</span>
-            </NavLink>
-
-            <NavLink
-              className={({ isActive }) =>
-                isActive ? "nav-card active" : "nav-card"
-              }
-              to="/reports"
-            >
-              <span className="nav-icon pink">📊</span>
-              <span>Reports</span>
-            </NavLink>
-
-            <button className="nav-card logout-button" onClick={handleLogout}>
-              <span className="nav-icon orange">🚪</span>
-              <span>Logout</span>
-            </button>
+            <NavItem as={NavLink} to="/" end icon={<LayoutDashboard />} label="Dashboard" />
+            <NavItem as={NavLink} to="/transactions" icon={<ReceiptText />} label="Transactions" />
+            <NavItem as={NavLink} to="/budget" icon={<PiggyBank />} label="Budget" />
+            <NavItem as={NavLink} to="/reports" icon={<ChartPie />} label="Reports" />
+            <NavItem as={NavLink} to="/accounts" icon={<Landmark />} label="Accounts" />
+            <NavItem icon={<LogOut />} label="Logout" onClick={handleLogout} />
           </>
         ) : (
           <>
-            <NavLink
-              className={({ isActive }) =>
-                isActive ? "nav-card active" : "nav-card"
-              }
-              to="/login"
-            >
-              <span className="nav-icon purple">🔐</span>
-              <span>Login</span>
-            </NavLink>
-
-            <NavLink
-              className={({ isActive }) =>
-                isActive ? "nav-card active" : "nav-card"
-              }
-              to="/signup"
-            >
-              <span className="nav-icon orange">👤</span>
-              <span>Signup</span>
-            </NavLink>
+            <NavItem as={NavLink} to="/login" icon={<LogIn />} label="Login" />
+            <NavItem as={NavLink} to="/signup" icon={<UserPlus />} label="Signup" />
           </>
         )}
       </nav>
 
       <div className="sidebar-footer">
-        <span className="footer-icon">💸</span>
-        <p>Stay on track and achieve your goals!</p>
+        <Wallet size={16} />
+        <p>Stay on track and achieve your goals.</p>
       </div>
     </aside>
   );

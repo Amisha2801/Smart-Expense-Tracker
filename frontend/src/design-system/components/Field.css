@@ -1,0 +1,38 @@
+.ds-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.ds-field__label {
+  font: var(--text-caption);
+  color: var(--ink2);
+}
+
+.ds-input,
+.ds-select {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 11px 14px;
+  border-radius: var(--radius-md);
+  border: var(--border-hairline);
+  background: var(--surface);
+  color: var(--ink);
+  font: var(--text-ui);
+  outline: none;
+  transition: border-color var(--duration-fast) var(--ease-standard);
+}
+
+.ds-select {
+  cursor: pointer;
+}
+
+.ds-input::placeholder {
+  color: var(--muted);
+}
+
+.ds-input:focus,
+.ds-select:focus {
+  border-color: var(--ink2);
+}

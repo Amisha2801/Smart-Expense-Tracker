@@ -1,18 +1,19 @@
+import { EmptyState, ProgressBar } from "../../design-system/components";
 import { formatCents } from "../../utils/moneyUtils";
+import { Receipt } from "lucide-react";
 
 function BudgetComparisonTable({ data }) {
   if (data.length === 0) {
     return (
-      <div className="reports-chart-empty">
-        <div className="empty-icon">🧾</div>
-        <p>No budget breakdown for this month.</p>
-      </div>
+      <EmptyState icon={<Receipt />}>
+        No budget breakdown for this month.
+      </EmptyState>
     );
   }
 
   return (
-    <div className="budget-comparison-table-wrap">
-      <table className="budget-comparison-table">
+    <div className="ds-table-wrap">
+      <table className="ds-table">
         <thead>
           <tr>
             <th>Category</th>
@@ -24,38 +25,36 @@ function BudgetComparisonTable({ data }) {
         </thead>
         <tbody>
           {data.map((row) => {
-            const barWidth = Math.min(row.percentUsed, 100);
             const isOverBudget = row.percentUsed > 100;
 
             return (
               <tr key={row.categoryId}>
                 <td>
-                  <span className="budget-table-category">
-                    <span>{row.icon}</span>
+                  <span className="ds-table__category">
+                    <span
+                      className="ds-table__dot"
+                      style={{ background: row.color }}
+                    />
                     {row.name}
                   </span>
                 </td>
                 <td>{formatCents(row.allocatedCents)}</td>
                 <td>{formatCents(row.spentCents)}</td>
-                <td className={row.remainingCents < 0 ? "over-budget-text" : ""}>
+                <td className={row.remainingCents < 0 ? "ds-table__negative" : ""}>
                   {formatCents(row.remainingCents)}
                 </td>
                 <td>
-                  <div className="budget-progress-track">
-                    <div
-                      className={
-                        isOverBudget
-                          ? "budget-progress-fill over-budget"
-                          : "budget-progress-fill"
-                      }
-                      style={{ width: `${barWidth}%` }}
-                    />
-                  </div>
+                  <ProgressBar
+                    value={row.spentCents}
+                    max={row.allocatedCents || row.spentCents}
+                    color={row.color}
+                    height={8}
+                  />
                   <span
                     className={
                       isOverBudget
-                        ? "budget-progress-label over-budget-text"
-                        : "budget-progress-label"
+                        ? "ds-table__progress-label ds-table__negative"
+                        : "ds-table__progress-label"
                     }
                   >
                     {row.percentUsed.toFixed(0)}%

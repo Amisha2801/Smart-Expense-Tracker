@@ -1,0 +1,34 @@
+.ds-nav-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  padding: 11px 12px;
+  border-radius: var(--radius-md);
+  font-family: var(--font-sans);
+  font-size: 15px;
+  border: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  background: transparent;
+  color: var(--ink2);
+  text-decoration: none;
+  box-sizing: border-box;
+}
+
+.ds-nav-item svg {
+  width: 17px;
+  height: 17px;
+  flex-shrink: 0;
+}
+
+.ds-nav-item:hover {
+  background: var(--surface2);
+}
+
+.ds-nav-item--active,
+.ds-nav-item--active:hover {
+  color: var(--navactiveink);
+  background: var(--navactive);
+  font-weight: 600;
+}

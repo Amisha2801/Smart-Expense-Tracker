@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { loginUser } from "../api/authApi";
 import { useNavigate } from "react-router-dom";
-import StatusMessage from "../components/StatusMessage";
+import { Card, TextField, Button, StatusBanner } from "../design-system/components";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -20,8 +20,6 @@ function Login() {
 
       const data = await loginUser(email, password);
 
-      console.log("Login response:", data);
-
       if (data.error) {
         setError("Invalid email or password. Please try again.");
         return;
@@ -36,7 +34,6 @@ function Login() {
       setTimeout(() => {
         navigate("/");
       }, 1000);
-
     } catch (err) {
       console.error("Login failed:", err);
       setError("Unable to connect to the server. Please try again later.");
@@ -44,35 +41,37 @@ function Login() {
   };
 
   return (
-    <div className="auth-page">
-      <div className="auth-card">
-        <h1>Welcome Back</h1>
-        <p>Login to your Smart Expense Tracker account</p>
+    <div className="page--centered">
+      <Card elevated padding="42px" style={{ width: "100%", maxWidth: 420 }}>
+        <div className="auth-card-header">
+          <h1 style={{ font: "var(--text-h1-hero)" }}>Welcome back</h1>
+          <p>Login to your Ledger account</p>
+        </div>
 
-        <StatusMessage error={error} message={message} />
+        <StatusBanner error={error} message={message} />
 
-        <form onSubmit={handleLogin}>
-          <input
+        <form className="stacked-form" onSubmit={handleLogin}>
+          <TextField
             type="email"
-            placeholder="Email Address"
+            placeholder="Email address"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
 
-          <input
+          <TextField
             type="password"
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
 
-          <button type="submit">Login</button>
+          <Button type="submit">Login</Button>
         </form>
 
-        <p className="auth-link-text">
+        <p className="auth-footnote">
           Forgot password? This feature will be added later.
         </p>
-      </div>
+      </Card>
     </div>
   );
 }

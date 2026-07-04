@@ -1,7 +1,7 @@
-const API_URL = "http://localhost:5000/api/users";
+import { API_BASE_URL } from "./config";
 
 export async function loginUser(email, password) {
-  const response = await fetch(`${API_URL}/login`, {
+  const response = await fetch(`${API_BASE_URL}/users/login`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -18,7 +18,7 @@ export async function loginUser(email, password) {
 }
 
 export async function registerUser(name, email, password) {
-  const response = await fetch(`${API_URL}/register`, {
+  const response = await fetch(`${API_BASE_URL}/users/register`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

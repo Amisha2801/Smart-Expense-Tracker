@@ -6,7 +6,22 @@ import {
   getBudgets,
   getCategories,
 } from "../api/budgetApi";
-import StatusMessage from "../components/StatusMessage";
+import { PiggyBank, Tag } from "lucide-react";
+import {
+  PageHeader,
+  Card,
+  SectionHeader,
+  StatusBanner,
+  TextField,
+  Select,
+  Button,
+  EmptyState,
+} from "../design-system/components";
+
+const CATEGORY_COLORS = {
+  income: "#3f6f4f",
+  expense: "#c26a3d",
+};
 
 function Budget() {
   const [categories, setCategories] = useState([]);
@@ -14,7 +29,6 @@ function Budget() {
 
   const [categoryName, setCategoryName] = useState("");
   const [categoryKind, setCategoryKind] = useState("expense");
-  const categoryIcon = "💰";
 
   const [selectedCategoryId, setSelectedCategoryId] = useState("");
   const [budgetMonth, setBudgetMonth] = useState(
@@ -96,8 +110,8 @@ function Budget() {
       const data = await createCategory({
         name: categoryName,
         kind: categoryKind,
-        icon: categoryIcon,
-        color: categoryKind === "income" ? "#10b981" : "#8b5cf6",
+        icon: "💰",
+        color: CATEGORY_COLORS[categoryKind],
       });
 
       if (data.error) {
@@ -187,66 +201,55 @@ function Budget() {
   );
 
   return (
-    <div className="dashboard-page">
-      <div className="hero-title">
-        <span className="sparkle">💰</span>
-        <h1>Budget Management</h1>
-      </div>
+    <div className="page">
+      <PageHeader eyebrow="Ledger" title="Budget" />
 
-      <div className="transactions-card">
-        <div className="section-header">
-          <div className="card-icon small-icon">📋</div>
-          <div className="section-header-text">
-            <h2>Your Budgets</h2>
-            <p className="section-subtitle">
-              Create categories and monthly limits to stay on track.
-            </p>
-          </div>
-        </div>
+      <Card padding="28px 30px">
+        <SectionHeader
+          icon={<PiggyBank />}
+          title="Your budgets"
+          subtitle="Create categories and monthly limits to stay on track."
+        />
 
-        <StatusMessage error={error} message={message} />
+        <StatusBanner error={error} message={message} />
 
-        <div className="budget-form-section">
-          <h3 className="form-section-title">
-            💸 Wondering where your money goes? 🤔
-          </h3>
-
+        <div className="form-section">
+          <h3>Where does your money go?</h3>
           <p className="form-section-subtitle">
-            Let's find out 😉 Start by creating a category.
+            Start by creating a category.
           </p>
 
-          <form className="budget-form budget-form-triple" onSubmit={handleCreateCategory}>
-            <input
+          <form className="form-grid form-grid--triple" onSubmit={handleCreateCategory}>
+            <TextField
               type="text"
-              placeholder="Category Name, e.g. Food"
+              placeholder="Category name, e.g. Food"
               value={categoryName}
               onChange={(e) => setCategoryName(e.target.value)}
             />
 
-            <select
+            <Select
               value={categoryKind}
               onChange={(e) => setCategoryKind(e.target.value)}
             >
               <option value="expense">Expense</option>
               <option value="income">Income</option>
-            </select>
+            </Select>
 
-            <button type="submit">Add Category</button>
+            <Button type="submit">Add category</Button>
           </form>
         </div>
 
-        <div className="budget-form-section">
-          <h3 className="form-section-title">🧾 Give your money a game plan</h3>
-
+        <div className="form-section">
+          <h3>Give your money a game plan</h3>
           <p className="form-section-subtitle">
-            💸 Pick a category, set a limit, and keep future-you thankful 😇
+            Pick a category, set a limit, and keep future-you on track.
           </p>
 
           <form
-            className="budget-form budget-form-wide"
+            className="form-grid form-grid--wide"
             onSubmit={handleCreateBudget}
           >
-            <select
+            <Select
               value={selectedCategoryId}
               onChange={(e) => setSelectedCategoryId(e.target.value)}
             >
@@ -256,58 +259,56 @@ function Budget() {
                 .filter((category) => category.kind === "expense")
                 .map((category) => (
                   <option key={category.id} value={category.id}>
-                    💰 {category.name}
+                    {category.name}
                   </option>
                 ))}
-            </select>
+            </Select>
 
-            <input
+            <TextField
               type="month"
               value={budgetMonth}
               onChange={(e) => setBudgetMonth(e.target.value)}
             />
 
-            <input
+            <TextField
               type="number"
               placeholder="Amount, e.g. 500"
               value={budgetAmount}
               onChange={(e) => setBudgetAmount(e.target.value)}
             />
 
-            <input
+            <TextField
               type="text"
               placeholder="Notes optional"
               value={budgetNotes}
               onChange={(e) => setBudgetNotes(e.target.value)}
             />
 
-            <button type="submit">Create Budget</button>
+            <Button type="submit">Create budget</Button>
           </form>
         </div>
 
-        <div className="budget-list">
+        <div className="list">
           {budgets.length === 0 ? (
-            <div className="empty-state">
-              <div className="empty-icon">💵</div>
-              <p>No budgets yet. Create one to start tracking your spending.</p>
-            </div>
+            <EmptyState icon={<PiggyBank />}>
+              No budgets yet. Create one to start tracking your spending.
+            </EmptyState>
           ) : (
             <>
-              <div className="budget-month-buttons">
+              <div className="chip-row">
                 {monthKeys.map((monthKey) => (
                   <button
                     key={monthKey}
+                    type="button"
                     className={
-                      openMonth === monthKey
-                        ? "month-button active-month"
-                        : "month-button"
+                      openMonth === monthKey ? "chip chip--active" : "chip"
                     }
                     onClick={() => {
                       setSelectedMonth(monthKey);
                       setOpenMonth(openMonth === monthKey ? "" : monthKey);
                     }}
                   >
-                    View Budget for {formatMonth(`${monthKey}-01`)}
+                    {formatMonth(`${monthKey}-01`)}
                   </button>
                 ))}
               </div>
@@ -319,25 +320,28 @@ function Budget() {
                   );
 
                   return (
-                    <div className="budget-card" key={budget.id}>
-                      <div className="budget-card-icon">💰</div>
+                    <div className="list-row" key={budget.id}>
+                      <div className="list-row__icon">
+                        <Tag />
+                      </div>
 
-                      <div className="budget-card-text">
+                      <div className="list-row__text">
                         <h3>{category?.name || "Category"}</h3>
                         <p>{formatMonth(budget.period_month)}</p>
                       </div>
 
-                      <div className="budget-card-actions">
-                        <div className="budget-card-amount">
+                      <div className="list-row__actions">
+                        <div className="list-row__amount">
                           ${(budget.allocated_cents / 100).toFixed(2)}
                         </div>
 
-                        <button
-                          className="delete-budget-button"
+                        <Button
+                          variant="danger"
+                          size="sm"
                           onClick={() => handleDeleteBudget(budget.id)}
                         >
                           Delete
-                        </button>
+                        </Button>
                       </div>
                     </div>
                   );
@@ -345,7 +349,7 @@ function Budget() {
             </>
           )}
         </div>
-      </div>
+      </Card>
     </div>
   );
 }

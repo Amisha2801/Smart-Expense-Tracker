@@ -1,63 +1,46 @@
-import "../App.css";
+import { useNavigate } from "react-router-dom";
+import { ReceiptText, PiggyBank, Wallet, Inbox, Plus } from "lucide-react";
+import {
+  PageHeader,
+  StatCard,
+  Card,
+  SectionHeader,
+  EmptyState,
+  Button,
+} from "../design-system/components";
 
 function Dashboard() {
+  const navigate = useNavigate();
+
   return (
-    <main className="dashboard-page">
-      <section className="hero-title">
-        <span className="sparkle">✦</span>
-        <h1>Smart Expense Tracker</h1>
-        <span className="sparkle">✦</span>
-      </section>
+    <div className="page">
+      <PageHeader eyebrow="Overview" title="Dashboard" />
 
-      <section className="overview-heading">
-        <h2>Dashboard Overview</h2>
-        <div className="heading-line"></div>
-      </section>
+      <div className="stat-grid">
+        <StatCard icon={<ReceiptText />} label="Total expenses" value="$3,000.00" tone="negative" />
+        <StatCard icon={<PiggyBank />} label="Monthly budget" value="$7,000.00" tone="neutral" />
+        <StatCard icon={<Wallet />} label="Remaining budget" value="$4,000.00" tone="positive" />
+      </div>
 
-      <section className="summary-grid">
-        <div className="summary-card purple-card">
-          <div className="card-icon">💳</div>
-          <div className="summary-card-content">
-            <h3>Total Expenses</h3>
-            <p>$3,000</p>
-          </div>
-        </div>
+      <Card padding="28px 30px">
+        <SectionHeader
+          icon={<ReceiptText />}
+          title="Recent transactions"
+          subtitle="Your latest activity will show up here."
+        />
 
-        <div className="summary-card green-card">
-          <div className="card-icon">💰</div>
-          <div className="summary-card-content">
-            <h3>Monthly Budget</h3>
-            <p>$7,000</p>
-          </div>
-        </div>
-
-        <div className="summary-card orange-card">
-          <div className="card-icon">📊</div>
-          <div className="summary-card-content">
-            <h3>Remaining Budget</h3>
-            <p>$4,000</p>
-          </div>
-        </div>
-      </section>
-
-      <section className="transactions-card">
-        <div className="section-header">
-          <div className="card-icon small-icon">📄</div>
-          <div className="section-header-text">
-            <h2>Recent Transactions</h2>
-            <p className="section-subtitle">
-              Your latest activity will show up here.
-            </p>
-          </div>
-        </div>
-
-        <div className="empty-state">
-          <div className="empty-icon">🗂️</div>
-          <p>No transactions available.</p>
-          <button>Add Expense</button>
-        </div>
-      </section>
-    </main>
+        <EmptyState
+          icon={<Inbox />}
+          action={
+            <Button icon={<Plus />} onClick={() => navigate("/transactions")}>
+              Add expense
+            </Button>
+          }
+        >
+          No transactions available.
+        </EmptyState>
+      </Card>
+    </div>
   );
 }
 

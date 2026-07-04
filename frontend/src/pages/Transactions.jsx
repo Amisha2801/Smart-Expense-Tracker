@@ -7,7 +7,18 @@ import {
   getAccounts,
   getTransactions,
 } from "../api/transactionApi";
-import StatusMessage from "../components/StatusMessage";
+import { ArrowDownLeft, ArrowUpRight, Trash2 } from "lucide-react";
+import {
+  PageHeader,
+  Card,
+  SectionHeader,
+  StatusBanner,
+  TextField,
+  Select,
+  Button,
+  SegmentedControl,
+  EmptyState,
+} from "../design-system/components";
 
 function Transactions() {
   const [accounts, setAccounts] = useState([]);
@@ -180,96 +191,69 @@ function Transactions() {
   );
 
   return (
-    <div className="dashboard-page">
-      <div className="hero-title">
-        <span className="sparkle">💳</span>
-        <h1>Transactions</h1>
-      </div>
+    <div className="page">
+      <PageHeader eyebrow="Ledger" title="Transactions" />
 
-      <div className="transactions-card">
-        <div className="section-header">
-          <div className="card-icon small-icon">💸</div>
-          <div className="section-header-text">
-            <h2>Track Your Spending</h2>
-            <p className="section-subtitle">
-              Add accounts, expenses, and income to keep your ledger up to date.
-            </p>
-          </div>
-        </div>
+      <Card padding="28px 30px">
+        <SectionHeader
+          icon={<ArrowUpRight />}
+          title="Track your spending"
+          subtitle="Add accounts, expenses, and income to keep your ledger up to date."
+        />
 
-        <StatusMessage error={error} message={message} />
+        <StatusBanner error={error} message={message} />
 
-        <div className="budget-form-section">
-          <h3 className="form-section-title">🏦 Where does your money live?</h3>
-
+        <div className="form-section">
+          <h3>Where does your money live?</h3>
           <p className="form-section-subtitle">
-            Let's start by adding an account before tracking expenses.
+            Start by adding an account before tracking expenses.
           </p>
 
-          <form className="budget-form budget-form-triple" onSubmit={handleCreateAccount}>
-            <input
+          <form className="form-grid form-grid--triple" onSubmit={handleCreateAccount}>
+            <TextField
               type="text"
-              placeholder="Account Name, e.g. Checking"
+              placeholder="Account name, e.g. Checking"
               value={accountName}
               onChange={(e) => setAccountName(e.target.value)}
             />
 
-            <input
+            <TextField
               type="number"
               placeholder="Balance"
               value={startingBalance}
               onChange={(e) => setStartingBalance(e.target.value)}
             />
 
-            <button type="submit">Add Account</button>
+            <Button type="submit">Add account</Button>
           </form>
         </div>
 
-        <div className="budget-form-section">
-          <h3 className="form-section-title">
-            💸 Where did today's money go — or come from?
-          </h3>
-
+        <div className="form-section">
+          <h3>Where did today&rsquo;s money go &mdash; or come from?</h3>
           <p className="form-section-subtitle">
-            Log an expense or income to keep your ledger up to date 😅
+            Log an expense or income to keep your ledger up to date.
           </p>
 
-          <div className="type-toggle" role="group" aria-label="Transaction type">
-            <button
-              type="button"
-              className={
-                transactionType === "expense"
-                  ? "type-toggle-option active"
-                  : "type-toggle-option"
-              }
-              onClick={() => {
-                setTransactionType("expense");
+          <div style={{ marginBottom: "var(--space-9)" }}>
+            <SegmentedControl
+              ariaLabel="Transaction type"
+              value={transactionType}
+              onChange={(value) => {
+                setTransactionType(value);
                 setSelectedCategoryId("");
               }}
-            >
-              💳 Expense
-            </button>
-            <button
-              type="button"
-              className={
-                transactionType === "income"
-                  ? "type-toggle-option active income"
-                  : "type-toggle-option"
-              }
-              onClick={() => {
-                setTransactionType("income");
-                setSelectedCategoryId("");
-              }}
-            >
-              💵 Income
-            </button>
+              options={[
+                { value: "expense", label: "Expense" },
+                { value: "income", label: "Income" },
+              ]}
+            />
           </div>
 
           <form
-            className="budget-form budget-form-wide"
+            className="form-grid form-grid--wide"
             onSubmit={handleCreateTransaction}
           >
-            <select
+            <Select
               value={selectedAccountId}
               onChange={(e) => setSelectedAccountId(e.target.value)}
             >
@@ -279,9 +263,9 @@ function Transactions() {
                   {account.name}
                 </option>
               ))}
-            </select>
+            </Select>
 
-            <select
+            <Select
               value={selectedCategoryId}
               onChange={(e) => setSelectedCategoryId(e.target.value)}
             >
@@ -292,100 +276,101 @@ function Transactions() {
               </option>
               {categoryOptions.map((category) => (
                 <option key={category.id} value={category.id}>
-                  {transactionType === "income" ? "💵" : "💰"} {category.name}
+                  {category.name}
                 </option>
               ))}
-            </select>
+            </Select>
 
-            <input
+            <TextField
               type="number"
               placeholder="Amount, e.g. 24.99"
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
             />
 
-            <input
+            <TextField
               type="date"
               value={occurredOn}
               onChange={(e) => setOccurredOn(e.target.value)}
             />
 
-            <input
+            <TextField
               type="text"
               placeholder="Payee, e.g. Tim Hortons"
               value={payee}
               onChange={(e) => setPayee(e.target.value)}
             />
 
-            <input
+            <TextField
               type="text"
               placeholder="Notes optional"
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
             />
 
-            <button type="submit">
-              {transactionType === "income" ? "Add Income" : "Add Expense"}
-            </button>
+            <Button type="submit">
+              {transactionType === "income" ? "Add income" : "Add expense"}
+            </Button>
           </form>
         </div>
 
-        <div className="budget-list">
+        <div className="list">
           {transactions.length === 0 ? (
-            <div className="empty-state">
-              <div className="empty-icon">🧾</div>
-              <p>No transactions yet. Add an expense to get started.</p>
-            </div>
+            <EmptyState icon={<ArrowDownLeft />}>
+              No transactions yet. Add an expense to get started.
+            </EmptyState>
           ) : (
             transactions.map((transaction) => {
               const category = categories.find(
                 (cat) => cat.id === transaction.category_id
               );
               const isIncome = transaction.type === "income";
-              const amount = (transaction.amount_cents / 100).toFixed(2);
+              const amountValue = (transaction.amount_cents / 100).toFixed(2);
 
               return (
-                <div className="budget-card" key={transaction.id}>
-                  <div className="budget-card-icon">
-                    {isIncome ? "💵" : "💳"}
+                <div className="list-row" key={transaction.id}>
+                  <div className="list-row__icon">
+                    {isIncome ? <ArrowDownLeft /> : <ArrowUpRight />}
                   </div>
 
-                  <div className="budget-card-text">
+                  <div className="list-row__text">
                     <h3>
                       {transaction.payee ||
                         category?.name ||
                         (isIncome ? "Income" : "Expense")}
                     </h3>
                     <p>
-                      {category?.name || "Category"} •{" "}
+                      {category?.name || "Category"} &middot;{" "}
                       {formatDate(transaction.occurred_on)}
                     </p>
                   </div>
 
-                  <div className="budget-card-actions">
+                  <div className="list-row__actions">
                     <div
                       className={
                         isIncome
-                          ? "budget-card-amount income"
-                          : "budget-card-amount"
+                          ? "list-row__amount list-row__amount--positive"
+                          : "list-row__amount list-row__amount--negative"
                       }
                     >
-                      {isIncome ? "+" : "-"}${amount}
+                      {isIncome ? "+" : "–"}${amountValue}
                     </div>
 
-                    <button
-                      className="delete-budget-button"
+                    <Button
+                      variant="danger"
+                      size="sm"
+                      icon={<Trash2 />}
                       onClick={() => handleDeleteTransaction(transaction.id)}
                     >
                       Delete
-                    </button>
+                    </Button>
                   </div>
                 </div>
               );
             })
           )}
         </div>
-      </div>
+      </Card>
     </div>
   );
 }

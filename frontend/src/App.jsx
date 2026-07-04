@@ -7,16 +7,17 @@ import Dashboard from "./pages/Dashboard";
 import Transactions from "./pages/Transactions";
 import Budget from "./pages/Budget";
 import Reports from "./pages/Reports";
+import Accounts from "./pages/Accounts";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 
 function App() {
   return (
     <BrowserRouter>
-      <div className="app-layout">
+      <div className="app-shell">
         <Sidebar />
 
-        <div className="main-content">
+        <div className="app-main">
           <Routes>
             <Route
               path="/"
@@ -50,6 +51,15 @@ function App() {
               element={
                 <ProtectedRoute>
                   <Reports />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/accounts"
+              element={
+                <ProtectedRoute>
+                  <Accounts />
                 </ProtectedRoute>
               }
             />

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { registerUser } from "../api/authApi";
-import StatusMessage from "../components/StatusMessage";
+import { Card, TextField, Button, StatusBanner } from "../design-system/components";
 
 function Signup() {
   const [name, setName] = useState("");
@@ -25,8 +25,6 @@ function Signup() {
 
       const data = await registerUser(name, email, password);
 
-      console.log("Signup response:", data);
-
       if (data.error) {
         setError(data.error);
         return;
@@ -40,45 +38,47 @@ function Signup() {
   };
 
   return (
-    <div className="auth-page">
-      <div className="auth-card">
-        <h1>Create Account</h1>
-        <p>Sign up to start tracking your expenses</p>
+    <div className="page--centered">
+      <Card elevated padding="42px" style={{ width: "100%", maxWidth: 420 }}>
+        <div className="auth-card-header">
+          <h1 style={{ font: "var(--text-h1-hero)" }}>Create account</h1>
+          <p>Sign up to start tracking your expenses</p>
+        </div>
 
-        <StatusMessage error={error} message={message} />
+        <StatusBanner error={error} message={message} />
 
-        <form onSubmit={handleSignup}>
-          <input
+        <form className="stacked-form" onSubmit={handleSignup}>
+          <TextField
             type="text"
-            placeholder="Full Name"
+            placeholder="Full name"
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
 
-          <input
+          <TextField
             type="email"
-            placeholder="Email Address"
+            placeholder="Email address"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
 
-          <input
+          <TextField
             type="password"
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
 
-          <input
+          <TextField
             type="password"
-            placeholder="Confirm Password"
+            placeholder="Confirm password"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
           />
 
-          <button type="submit">Sign Up</button>
+          <Button type="submit">Sign up</Button>
         </form>
-      </div>
+      </Card>
     </div>
   );
 }
