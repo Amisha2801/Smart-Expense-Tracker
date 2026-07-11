@@ -34,6 +34,27 @@ export async function createAccount({ name, type, startingBalanceDollars }) {
   return data;
 }
 
+export async function updateAccount(accountId, { name, type }) {
+  const response = await fetch(`${API_BASE_URL}/accounts/${accountId}`, {
+    method: "PATCH",
+    headers: getAuthHeaders(),
+    body: JSON.stringify({ name, type }),
+  });
+
+  const data = await response.json();
+  return data;
+}
+
+export async function deleteAccount(accountId) {
+  const response = await fetch(`${API_BASE_URL}/accounts/${accountId}`, {
+    method: "DELETE",
+    headers: getAuthHeaders(),
+  });
+
+  const data = await response.json();
+  return data;
+}
+
 export async function getTransactions() {
   const response = await fetch(`${API_BASE_URL}/transactions`, {
     headers: getAuthHeaders(),

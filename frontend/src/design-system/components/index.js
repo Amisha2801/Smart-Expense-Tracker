@@ -9,6 +9,7 @@ export { SectionHeader } from './SectionHeader';
 export { EmptyState } from './EmptyState';
 export { TextField } from './TextField';
 export { Select } from './Select';
+export { MonthYearPicker } from './MonthYearPicker';
 export { StatusBanner } from './StatusBanner';
 export { SegmentedControl } from './SegmentedControl';
 export { Dialog } from './Dialog';

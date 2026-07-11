@@ -18,7 +18,7 @@ import {
   Card,
   SectionHeader,
   StatusBanner,
-  TextField,
+  MonthYearPicker,
   EmptyState,
 } from "../design-system/components";
 import { formatCents } from "../utils/moneyUtils";
@@ -165,11 +165,9 @@ function Reports() {
         title="Reports"
         subtitle={`Viewing ${monthKeyToLabel(monthKey)}`}
         action={
-          <TextField
-            type="month"
+          <MonthYearPicker
             value={monthKey}
             onChange={(event) => setMonthKey(event.target.value)}
-            onClick={(event) => event.currentTarget.showPicker?.()}
           />
         }
       />

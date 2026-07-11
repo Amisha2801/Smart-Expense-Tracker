@@ -1,5 +1,10 @@
 import { useEffect, useState } from "react";
-import { createAccount, getAccounts } from "../api/transactionApi";
+import {
+  createAccount,
+  getAccounts,
+  updateAccount,
+  deleteAccount,
+} from "../api/transactionApi";
 import {
   Landmark,
   PiggyBank,
@@ -7,6 +12,8 @@ import {
   Banknote,
   LineChart,
   Plus,
+  Pencil,
+  Trash2,
 } from "lucide-react";
 import {
   PageHeader,
@@ -29,18 +36,41 @@ const ACCOUNT_TYPES = {
   investment: { label: "Investment", icon: LineChart },
 };
 
-function AccountCard({ account }) {
+function AccountCard({ account, onEdit, onDelete }) {
   const meta = ACCOUNT_TYPES[account.type] ?? ACCOUNT_TYPES.checking;
   const Icon = meta.icon;
   const isNegative = account.current_balance_cents < 0;
 
   return (
-    <Card>
+    <Card className="account-card">
       <div className="account-card__header">
         <div className="account-card__icon">
           <Icon />
         </div>
-        <span className="account-card__type">{meta.label}</span>
+
+        <div className="account-card__header-right">
+          <span className="account-card__type">{meta.label}</span>
+          <div className="account-card__actions">
+            <button
+              type="button"
+              className="account-card__action"
+              onClick={() => onEdit(account)}
+              title="Edit account"
+              aria-label="Edit account"
+            >
+              <Pencil size={14} />
+            </button>
+            <button
+              type="button"
+              className="account-card__action account-card__action--delete"
+              onClick={() => onDelete(account)}
+              title="Remove account"
+              aria-label="Remove account"
+            >
+              <Trash2 size={14} />
+            </button>
+          </div>
+        </div>
       </div>
 
       <div className="account-card__name">{account.name}</div>
@@ -69,6 +99,12 @@ function Accounts() {
   const [name, setName] = useState("");
   const [type, setType] = useState("checking");
   const [startingBalance, setStartingBalance] = useState("");
+
+  const [editingAccount, setEditingAccount] = useState(null);
+  const [editName, setEditName] = useState("");
+  const [editType, setEditType] = useState("checking");
+
+  const [deletingAccount, setDeletingAccount] = useState(null);
 
   async function loadAccounts() {
     try {
@@ -136,6 +172,79 @@ function Accounts() {
     } catch (err) {
       console.error("Failed to create account:", err);
       setError("Unable to create account.");
+    }
+  };
+
+  const openEditDialog = (account) => {
+    setEditingAccount(account);
+    setEditName(account.name);
+    setEditType(account.type);
+  };
+
+  const closeEditDialog = () => {
+    setEditingAccount(null);
+  };
+
+  const handleUpdateAccount = async (e) => {
+    e.preventDefault();
+
+    if (!editName.trim()) {
+      setError("Account name is required.");
+      setMessage("");
+      return;
+    }
+
+    try {
+      setError("");
+      setMessage("");
+
+      const data = await updateAccount(editingAccount.id, {
+        name: editName,
+        type: editType,
+      });
+
+      if (data.error) {
+        setError(data.error);
+        return;
+      }
+
+      setMessage("Account updated successfully.");
+      closeEditDialog();
+
+      await loadAccounts();
+    } catch (err) {
+      console.error("Failed to update account:", err);
+      setError("Unable to update account.");
+    }
+  };
+
+  const openDeleteDialog = (account) => {
+    setDeletingAccount(account);
+  };
+
+  const closeDeleteDialog = () => {
+    setDeletingAccount(null);
+  };
+
+  const handleDeleteAccount = async () => {
+    try {
+      setError("");
+      setMessage("");
+
+      const data = await deleteAccount(deletingAccount.id);
+
+      if (data.error) {
+        setError(data.error);
+        return;
+      }
+
+      setMessage("Account removed.");
+      closeDeleteDialog();
+
+      await loadAccounts();
+    } catch (err) {
+      console.error("Failed to delete account:", err);
+      setError("Unable to remove account.");
     }
   };
 
@@ -214,6 +323,63 @@ function Accounts() {
         </form>
       </Dialog>
 
+      <Dialog
+        open={!!editingAccount}
+        onClose={closeEditDialog}
+        title="Edit account"
+      >
+        <form className="stacked-form" onSubmit={handleUpdateAccount}>
+          <TextField
+            label="Account name"
+            type="text"
+            placeholder="e.g. Everyday Checking"
+            value={editName}
+            onChange={(e) => setEditName(e.target.value)}
+          />
+
+          <Select
+            label="Account type"
+            value={editType}
+            onChange={(e) => setEditType(e.target.value)}
+          >
+            {Object.entries(ACCOUNT_TYPES).map(([value, { label }]) => (
+              <option key={value} value={value}>
+                {label}
+              </option>
+            ))}
+          </Select>
+
+          <div className="ds-dialog__footer">
+            <Button type="button" variant="secondary" onClick={closeEditDialog}>
+              Cancel
+            </Button>
+            <Button type="submit">Save changes</Button>
+          </div>
+        </form>
+      </Dialog>
+
+      <Dialog
+        open={!!deletingAccount}
+        onClose={closeDeleteDialog}
+        title="Remove account"
+      >
+        <div className="stacked-form">
+          <p className="account-confirm-copy">
+            Remove “{deletingAccount?.name}”? It will be archived and hidden
+            from your accounts list, but its transaction history is kept.
+          </p>
+
+          <div className="ds-dialog__footer">
+            <Button type="button" variant="secondary" onClick={closeDeleteDialog}>
+              Cancel
+            </Button>
+            <Button type="button" variant="danger" onClick={handleDeleteAccount}>
+              Remove account
+            </Button>
+          </div>
+        </div>
+      </Dialog>
+
       {!loading && accounts.length > 0 && (
         <Card elevated padding="30px 32px" className="accounts-hero">
           <div>
@@ -259,7 +425,12 @@ function Accounts() {
       ) : (
         <div className="account-grid">
           {accounts.map((account) => (
-            <AccountCard key={account.id} account={account} />
+            <AccountCard
+              key={account.id}
+              account={account}
+              onEdit={openEditDialog}
+              onDelete={openDeleteDialog}
+            />
           ))}
 
           <button

@@ -52,11 +52,67 @@
   gap: var(--space-7);
 }
 
+.account-card {
+  position: relative;
+}
+
 .account-card__header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   margin-bottom: var(--space-10);
+}
+
+.account-card__header-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--space-2);
+}
+
+.account-card__actions {
+  display: flex;
+  gap: 4px;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.account-card:hover .account-card__actions {
+  opacity: 1;
+}
+
+.account-card__action {
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-md);
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.account-card__action svg {
+  width: 14px;
+  height: 14px;
+}
+
+.account-card__action:hover {
+  background: var(--surface2);
+  color: var(--ink2);
+}
+
+.account-card__action--delete:hover {
+  background: var(--negbg);
+  color: var(--neg);
+}
+
+.account-confirm-copy {
+  font: var(--text-body);
+  color: var(--ink2);
+  margin: 0;
 }
 
 .account-card__icon {

@@ -13,7 +13,7 @@ import {
   Repeat, ShoppingBag, Clapperboard, Briefcase, Laptop, Gift, Tags, Trash2,
 } from "lucide-react";
 import {
-  Button, Dialog, Select, TextField, SegmentedControl, StatusBanner, EmptyState,
+  Button, Dialog, Select, TextField, SegmentedControl, StatusBanner, EmptyState, MonthYearPicker,
 } from "../design-system/components";
 import { formatCents, getCurrentMonthKey } from "../utils/moneyUtils";
 import "./Transactions.css";
@@ -240,17 +240,12 @@ function Transactions() {
           />
         </div>
 
-        <div className="trx-filter-chip">
-          <input
-            className="trx-month-input"
-            type="month"
-            value={filterMonth}
-            onChange={e => setFilterMonth(e.target.value)}
-          />
-        </div>
+        <MonthYearPicker
+          value={filterMonth}
+          onChange={e => setFilterMonth(e.target.value)}
+        />
 
-        <select
-          className="trx-filter-select"
+        <Select
           value={filterAccountId}
           onChange={e => setFilterAccountId(e.target.value)}
         >
@@ -258,10 +253,9 @@ function Transactions() {
           {accounts.map(acc => (
             <option key={acc.id} value={String(acc.id)}>{acc.name}</option>
           ))}
-        </select>
+        </Select>
 
-        <select
-          className="trx-filter-select"
+        <Select
           value={filterCategoryId}
           onChange={e => setFilterCategoryId(e.target.value)}
         >
@@ -269,7 +263,7 @@ function Transactions() {
           {categories.map(cat => (
             <option key={cat.id} value={String(cat.id)}>{cat.name}</option>
           ))}
-        </select>
+        </Select>
 
         <div className="trx-totals">
           <span>

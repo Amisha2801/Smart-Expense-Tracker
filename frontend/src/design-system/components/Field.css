@@ -10,8 +10,7 @@
   color: var(--ink2);
 }
 
-.ds-input,
-.ds-select {
+.ds-input {
   width: 100%;
   box-sizing: border-box;
   padding: 11px 14px;
@@ -24,15 +23,10 @@
   transition: border-color var(--duration-fast) var(--ease-standard);
 }
 
-.ds-select {
-  cursor: pointer;
-}
-
 .ds-input::placeholder {
   color: var(--muted);
 }
 
-.ds-input:focus,
-.ds-select:focus {
+.ds-input:focus {
   border-color: var(--ink2);
 }

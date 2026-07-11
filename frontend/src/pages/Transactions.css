@@ -70,37 +70,6 @@
   color: var(--muted);
 }
 
-/* Month input */
-.trx-filter-chip {
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 9px;
-  padding: 9px 13px;
-}
-
-.trx-month-input {
-  border: none;
-  background: transparent;
-  font-size: 14px;
-  color: var(--ink);
-  font-family: var(--font-sans);
-  cursor: pointer;
-  outline: none;
-}
-
-/* Filter selects */
-.trx-filter-select {
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 9px;
-  padding: 9px 13px;
-  font-size: 14px;
-  color: var(--ink);
-  font-family: var(--font-sans);
-  cursor: pointer;
-  outline: none;
-}
-
 /* Totals */
 .trx-totals {
   margin-left: auto;
