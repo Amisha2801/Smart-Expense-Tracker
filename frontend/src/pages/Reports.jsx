@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 
 import { fetchReportSourceData } from "../api/reportsApi";
-import StatusMessage from "../components/StatusMessage";
 import BudgetComparisonTable from "../components/reports/BudgetComparisonTable";
 import BudgetVsActualChart from "../components/reports/BudgetVsActualChart";
 import CategoryPieChart from "../components/reports/CategoryPieChart";
@@ -9,6 +8,86 @@ import MonthlyTrendChart from "../components/reports/MonthlyTrendChart";
 import SummaryCards from "../components/reports/SummaryCards";
 import { getCurrentMonthKey, monthKeyToLabel } from "../utils/moneyUtils";
 import { buildMonthlyReport } from "../utils/reportUtils";
+import {
+  PieChart, BarChart3, CalendarRange, Receipt, Inbox,
+  ShoppingCart, Utensils, Car, House, Zap, Repeat,
+  ShoppingBag, Clapperboard, Briefcase, Laptop, Gift, Tags, Store,
+} from "lucide-react";
+import {
+  PageHeader,
+  Card,
+  SectionHeader,
+  StatusBanner,
+  MonthYearPicker,
+  EmptyState,
+} from "../design-system/components";
+import { formatCents } from "../utils/moneyUtils";
+
+function guessIcon(name = "") {
+  const n = name.toLowerCase();
+  if (n.includes("grocer") || n.includes("whole foods") || n.includes("trader") || n.includes("market")) return ShoppingCart;
+  if (n.includes("din") || n.includes("restaurant") || n.includes("cafe") || n.includes("chipotle") || n.includes("mcdonald") || n.includes("pizza")) return Utensils;
+  if (n.includes("gas") || n.includes("shell") || n.includes("fuel") || n.includes("uber") || n.includes("lyft") || n.includes("transit")) return Car;
+  if (n.includes("rent") || n.includes("landlord") || n.includes("mortgage") || n.includes("home")) return House;
+  if (n.includes("electric") || n.includes("water") || n.includes("hydro") || n.includes("util")) return Zap;
+  if (n.includes("netflix") || n.includes("spotify") || n.includes("disney") || n.includes("hulu") || n.includes("subscri")) return Repeat;
+  if (n.includes("amazon") || n.includes("ebay") || n.includes("shop") || n.includes("target") || n.includes("walmart")) return ShoppingBag;
+  if (n.includes("movie") || n.includes("theater") || n.includes("fun") || n.includes("game") || n.includes("entertain")) return Clapperboard;
+  if (n.includes("salary") || n.includes("paycheck") || n.includes("employer") || n.includes("inc.") || n.includes("corp")) return Briefcase;
+  if (n.includes("freelance") || n.includes("consulting") || n.includes("contract")) return Laptop;
+  if (n.includes("gift") || n.includes("bonus") || n.includes("refund")) return Gift;
+  return Store;
+}
+
+function TopMerchants({ transactions, categories }) {
+  const merchantTotals = useMemo(() => {
+    const map = {};
+    transactions
+      .filter(tx => tx.type === "expense" && tx.payee)
+      .forEach(tx => {
+        const key = tx.payee;
+        if (!map[key]) {
+          map[key] = { payee: tx.payee, total: 0, categoryId: tx.category_id };
+        }
+        map[key].total += tx.amount_cents;
+      });
+    return Object.values(map)
+      .sort((a, b) => b.total - a.total)
+      .slice(0, 8);
+  }, [transactions]);
+
+  if (merchantTotals.length === 0) return null;
+
+  return (
+    <Card padding="0">
+      <div className="top-merchants-header">
+        <SectionHeader
+          icon={<Store />}
+          title="Top merchants"
+          subtitle="Biggest spend by payee this month."
+        />
+      </div>
+      <div className="top-merchants-grid">
+        {merchantTotals.map(({ payee, total, categoryId }) => {
+          const cat = categories.find(c => c.id === categoryId);
+          const Icon = guessIcon(payee);
+          return (
+            <div key={payee} className="top-merchant-row">
+              <span
+                className="top-merchant-row__icon"
+                style={{ color: cat?.color || "var(--ink2)" }}
+              >
+                <Icon size={16} />
+              </span>
+              <span className="top-merchant-row__name">{payee}</span>
+              <span className="top-merchant-row__amount figs">{formatCents(total)}</span>
+            </div>
+          );
+        })}
+      </div>
+    </Card>
+  );
+}
 
 function Reports() {
   const [monthKey, setMonthKey] = useState(getCurrentMonthKey());
@@ -80,111 +159,77 @@ function Reports() {
     report.budgetComparison.length > 0;
 
   return (
-    <div className="dashboard-page">
-      <div className="hero-title">
-        <span className="sparkle">📊</span>
-        <h1>Spending Reports</h1>
-      </div>
+    <div className="page">
+      <PageHeader
+        eyebrow="Ledger"
+        title="Reports"
+        subtitle={`Viewing ${monthKeyToLabel(monthKey)}`}
+        action={
+          <MonthYearPicker
+            value={monthKey}
+            onChange={(event) => setMonthKey(event.target.value)}
+          />
+        }
+      />
 
-      <section className="reports-controls transactions-card">
-        <div className="reports-controls-centered">
-          <div className="reports-controls-heading">
-            <h2>Viewing {monthKeyToLabel(monthKey)}</h2>
-            <p className="section-subtitle">
-              Pick a month to see income, expenses, and budget progress.
-            </p>
-          </div>
-
-          <label className="reports-month-picker">
-            <span>Month:</span>
-            <span className="reports-month-field">
-              <input
-                type="month"
-                value={monthKey}
-                onChange={(event) => setMonthKey(event.target.value)}
-                onClick={(event) => event.currentTarget.showPicker?.()}
-              />
-              <span className="reports-month-caret" aria-hidden="true">
-                ▾
-              </span>
-            </span>
-          </label>
-        </div>
-
-        <StatusMessage error={error} />
-      </section>
+      <StatusBanner error={error} />
 
       {loading ? (
-        <section className="transactions-card reports-loading-card">
-          <p>Loading reports…</p>
-        </section>
+        <Card padding="40px" style={{ textAlign: "center", color: "var(--muted)" }}>
+          Loading reports…
+        </Card>
       ) : (
         <>
           <SummaryCards summary={report.summary} />
 
           {!hasMonthActivity ? (
-            <section className="transactions-card">
-              <div className="empty-state">
-                <div className="empty-icon">🗂️</div>
-                <p>No activity for {report.monthLabel}.</p>
-              </div>
-            </section>
+            <Card padding="28px 30px">
+              <EmptyState icon={<Inbox />}>
+                No activity for {report.monthLabel}.
+              </EmptyState>
+            </Card>
           ) : (
-            <>
-              <section className="reports-chart-grid">
-                <div className="reports-chart-card">
-                  <div className="section-header">
-                    <div className="card-icon small-icon">🥧</div>
-                    <div className="section-header-text">
-                      <h2>Spending by Category</h2>
-                      <p className="section-subtitle">
-                        Where your money went this month.
-                      </p>
-                    </div>
-                  </div>
+            <div className="section-stack">
+              <div className="chart-grid">
+                <Card padding="28px 30px">
+                  <SectionHeader
+                    icon={<PieChart />}
+                    title="Spending by category"
+                    subtitle="Where your money went this month."
+                  />
                   <CategoryPieChart data={report.spendingByCategory} />
-                </div>
+                </Card>
 
-                <div className="reports-chart-card">
-                  <div className="section-header">
-                    <div className="card-icon small-icon">📊</div>
-                    <div className="section-header-text">
-                      <h2>Budget vs Actual</h2>
-                      <p className="section-subtitle">
-                        Compare planned limits with real spending.
-                      </p>
-                    </div>
-                  </div>
+                <Card padding="28px 30px">
+                  <SectionHeader
+                    icon={<BarChart3 />}
+                    title="Budget vs actual"
+                    subtitle="Compare planned limits with real spending."
+                  />
                   <BudgetVsActualChart data={report.budgetComparison} />
-                </div>
-              </section>
+                </Card>
+              </div>
 
-              <section className="reports-chart-card reports-full-width">
-                <div className="section-header">
-                  <div className="card-icon small-icon">📆</div>
-                  <div className="section-header-text">
-                    <h2>Monthly Trend</h2>
-                    <p className="section-subtitle">
-                      Income and expenses over the last 6 months.
-                    </p>
-                  </div>
-                </div>
+              <Card padding="28px 30px">
+                <SectionHeader
+                  icon={<CalendarRange />}
+                  title="Monthly trend"
+                  subtitle="Income and expenses over the last 6 months."
+                />
                 <MonthlyTrendChart data={report.trend} />
-              </section>
+              </Card>
 
-              <section className="reports-chart-card reports-full-width">
-                <div className="section-header">
-                  <div className="card-icon small-icon">🧾</div>
-                  <div className="section-header-text">
-                    <h2>Budget Breakdown</h2>
-                    <p className="section-subtitle">
-                      Remaining balance and progress for each category.
-                    </p>
-                  </div>
-                </div>
+              <Card padding="28px 30px">
+                <SectionHeader
+                  icon={<Receipt />}
+                  title="Budget breakdown"
+                  subtitle="Remaining balance and progress for each category."
+                />
                 <BudgetComparisonTable data={report.budgetComparison} />
-              </section>
-            </>
+              </Card>
+
+              <TopMerchants transactions={transactions} categories={categories} />
+            </div>
           )}
         </>
       )}

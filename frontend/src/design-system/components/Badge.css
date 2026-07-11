@@ -1,0 +1,25 @@
+.ds-badge {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: 100px;
+  white-space: nowrap;
+}
+
+.ds-badge--positive {
+  background: var(--posbg);
+  color: var(--pos);
+}
+
+.ds-badge--neutral {
+  background: var(--surface2);
+  color: var(--muted);
+}
+
+.ds-badge--negative {
+  background: var(--negbg);
+  color: var(--neg);
+}

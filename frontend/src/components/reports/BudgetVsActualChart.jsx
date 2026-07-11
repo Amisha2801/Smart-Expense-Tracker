@@ -8,7 +8,12 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { EmptyState } from "../../design-system/components";
 import { formatCents } from "../../utils/moneyUtils";
+import { BarChart3 } from "lucide-react";
+
+const AXIS_TICK = { fontSize: 12, fill: "#8a857a", fontFamily: "'Hanken Grotesk', sans-serif" };
+const LEGEND_STYLE = { fontSize: 13, fontFamily: "'Hanken Grotesk', sans-serif", color: "#57534a" };
 
 function BudgetTooltip({ active, payload }) {
   if (!active || !payload?.length) {
@@ -32,10 +37,9 @@ function BudgetTooltip({ active, payload }) {
 function BudgetVsActualChart({ data }) {
   if (data.length === 0) {
     return (
-      <div className="reports-chart-empty">
-        <div className="empty-icon">📉</div>
-        <p>No budget or spending data for this month.</p>
-      </div>
+      <EmptyState icon={<BarChart3 />}>
+        No budget or spending data for this month.
+      </EmptyState>
     );
   }
 
@@ -49,16 +53,16 @@ function BudgetVsActualChart({ data }) {
   return (
     <ResponsiveContainer width="100%" height={300}>
       <BarChart data={chartData} margin={{ top: 8, right: 8, left: 8, bottom: 8 }}>
-        <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-        <XAxis dataKey="name" tick={{ fontSize: 12 }} />
+        <CartesianGrid strokeDasharray="3 3" stroke="#e6e1d5" />
+        <XAxis dataKey="name" tick={AXIS_TICK} />
         <YAxis
           tickFormatter={(value) => `$${(value / 100).toFixed(0)}`}
-          tick={{ fontSize: 12 }}
+          tick={AXIS_TICK}
         />
         <Tooltip content={<BudgetTooltip />} />
-        <Legend />
-        <Bar dataKey="Budget" fill="#10b981" radius={[6, 6, 0, 0]} />
-        <Bar dataKey="Spent" fill="#7c3aed" radius={[6, 6, 0, 0]} />
+        <Legend wrapperStyle={LEGEND_STYLE} />
+        <Bar dataKey="Budget" fill="#3f6f4f" radius={[6, 6, 0, 0]} />
+        <Bar dataKey="Spent" fill="#c26a3d" radius={[6, 6, 0, 0]} />
       </BarChart>
     </ResponsiveContainer>
   );

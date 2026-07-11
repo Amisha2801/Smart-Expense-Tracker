@@ -1,0 +1,29 @@
+.ds-status-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-6);
+  padding: var(--space-7) var(--space-8);
+  border-radius: var(--radius-lg);
+  font: var(--text-ui);
+}
+
+.ds-status-banner svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.ds-status-banner p {
+  margin: 0;
+}
+
+.ds-status-banner--positive {
+  background: var(--posbg);
+  color: var(--pos);
+}
+
+.ds-status-banner--negative {
+  background: var(--negbg);
+  color: var(--neg);
+}

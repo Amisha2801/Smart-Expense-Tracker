@@ -6,7 +6,11 @@ import {
   ResponsiveContainer,
   Tooltip,
 } from "recharts";
+import { EmptyState } from "../../design-system/components";
 import { formatCents } from "../../utils/moneyUtils";
+import { PieChart as PieChartIcon } from "lucide-react";
+
+const LEGEND_STYLE = { fontSize: 13, fontFamily: "'Hanken Grotesk', sans-serif", color: "#57534a" };
 
 function CategoryTooltip({ active, payload }) {
   if (!active || !payload?.length) {
@@ -17,9 +21,7 @@ function CategoryTooltip({ active, payload }) {
 
   return (
     <div className="reports-tooltip">
-      <strong>
-        {item.icon} {item.name}
-      </strong>
+      <strong>{item.name}</strong>
       <span>
         {formatCents(item.spentCents)} ({item.percent.toFixed(1)}%)
       </span>
@@ -30,10 +32,9 @@ function CategoryTooltip({ active, payload }) {
 function CategoryPieChart({ data }) {
   if (data.length === 0) {
     return (
-      <div className="reports-chart-empty">
-        <div className="empty-icon">🥧</div>
-        <p>No spending by category for this month.</p>
-      </div>
+      <EmptyState icon={<PieChartIcon />}>
+        No spending by category for this month.
+      </EmptyState>
     );
   }
 
@@ -55,7 +56,7 @@ function CategoryPieChart({ data }) {
           ))}
         </Pie>
         <Tooltip content={<CategoryTooltip />} />
-        <Legend />
+        <Legend wrapperStyle={LEGEND_STYLE} />
       </PieChart>
     </ResponsiveContainer>
   );

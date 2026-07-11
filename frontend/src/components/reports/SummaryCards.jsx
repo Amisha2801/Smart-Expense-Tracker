@@ -1,37 +1,30 @@
+import { ArrowDownLeft, ArrowUpRight, Scale } from "lucide-react";
+import { StatCard } from "../../design-system/components";
 import { formatCents } from "../../utils/moneyUtils";
 
 function SummaryCards({ summary }) {
   return (
-    <section className="summary-grid reports-summary-grid">
-      <div className="summary-card green-card">
-        <div className="card-icon">💰</div>
-        <div className="summary-card-content">
-          <h3>Total Income</h3>
-          <p>{formatCents(summary.totalIncomeCents)}</p>
-        </div>
-      </div>
+    <section className="stat-grid">
+      <StatCard
+        icon={<ArrowDownLeft />}
+        label="Total income"
+        value={formatCents(summary.totalIncomeCents)}
+        tone="positive"
+      />
 
-      <div className="summary-card purple-card">
-        <div className="card-icon">💳</div>
-        <div className="summary-card-content">
-          <h3>Total Expenses</h3>
-          <p>{formatCents(summary.totalExpensesCents)}</p>
-        </div>
-      </div>
+      <StatCard
+        icon={<ArrowUpRight />}
+        label="Total expenses"
+        value={formatCents(summary.totalExpensesCents)}
+        tone="negative"
+      />
 
-      <div className="summary-card orange-card">
-        <div className="card-icon">📊</div>
-        <div className="summary-card-content">
-          <h3>Net</h3>
-          <p
-            className={
-              summary.netCents < 0 ? "summary-net-negative" : undefined
-            }
-          >
-            {formatCents(summary.netCents)}
-          </p>
-        </div>
-      </div>
+      <StatCard
+        icon={<Scale />}
+        label="Net"
+        value={formatCents(summary.netCents)}
+        tone={summary.netCents < 0 ? "negative" : "positive"}
+      />
     </section>
   );
 }

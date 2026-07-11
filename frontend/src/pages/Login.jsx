@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { loginUser } from "../api/authApi";
-import { useNavigate } from "react-router-dom";
-import StatusMessage from "../components/StatusMessage";
+import { useNavigate, Link } from "react-router-dom";
+import { Wallet, PiggyBank, ChartPie, Zap } from "lucide-react";
+import { TextField, Button, StatusBanner } from "../design-system/components";
+import "./Auth.css";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -20,8 +22,6 @@ function Login() {
 
       const data = await loginUser(email, password);
 
-      console.log("Login response:", data);
-
       if (data.error) {
         setError("Invalid email or password. Please try again.");
         return;
@@ -36,7 +36,6 @@ function Login() {
       setTimeout(() => {
         navigate("/");
       }, 1000);
-
     } catch (err) {
       console.error("Login failed:", err);
       setError("Unable to connect to the server. Please try again later.");
@@ -45,33 +44,82 @@ function Login() {
 
   return (
     <div className="auth-page">
-      <div className="auth-card">
-        <h1>Welcome Back</h1>
-        <p>Login to your Smart Expense Tracker account</p>
+      {/* Brand panel */}
+      <div className="auth-brand">
+        <div className="auth-brand__logo">
+          <div className="auth-brand__mark">
+            <Wallet size={20} />
+          </div>
+          <span className="auth-brand__name">Ledger</span>
+        </div>
 
-        <StatusMessage error={error} message={message} />
+        <div className="auth-brand__body">
+          <h2 className="auth-brand__headline">
+            Money,<br />minus the anxiety.
+          </h2>
+          <p className="auth-brand__sub">
+            Give every dollar a job, watch your envelopes fill, and always know
+            what&apos;s safe to spend.
+          </p>
+        </div>
 
-        <form onSubmit={handleLogin}>
-          <input
-            type="email"
-            placeholder="Email Address"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
+        <ul className="auth-brand__features">
+          <li>
+            <span className="auth-brand__feature-icon">
+              <PiggyBank size={15} style={{ color: "var(--pos)" }} />
+            </span>
+            Envelope budgeting that rolls over
+          </li>
+          <li>
+            <span className="auth-brand__feature-icon">
+              <ChartPie size={15} style={{ color: "var(--cat-trans)" }} />
+            </span>
+            Reports that read like a story
+          </li>
+          <li>
+            <span className="auth-brand__feature-icon">
+              <Zap size={15} style={{ color: "var(--cat-dine)" }} />
+            </span>
+            Two-tap expense logging
+          </li>
+        </ul>
+      </div>
 
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
+      {/* Form panel */}
+      <div className="auth-form-panel">
+        <div className="auth-form-inner">
+          <h1 className="auth-form__title">Welcome back</h1>
+          <p className="auth-form__sub">Sign in to pick up where you left off.</p>
 
-          <button type="submit">Login</button>
-        </form>
+          <StatusBanner error={error} message={message} />
 
-        <p className="auth-link-text">
-          Forgot password? This feature will be added later.
-        </p>
+          <form className="stacked-form" onSubmit={handleLogin}>
+            <TextField
+              label="Email"
+              type="email"
+              placeholder="you@email.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+
+            <TextField
+              label="Password"
+              type="password"
+              placeholder="Your password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+
+            <Button type="submit">Log in</Button>
+          </form>
+
+          <p className="auth-footnote">
+            New to Ledger?{" "}
+            <Link to="/signup" className="auth-footnote__link">
+              Create an account
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );

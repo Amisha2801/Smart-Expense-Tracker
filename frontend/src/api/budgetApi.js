@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:5000/api";
+import { API_BASE_URL } from "./config";
 
 function getAuthHeaders() {
   const token = localStorage.getItem("token");
@@ -10,7 +10,7 @@ function getAuthHeaders() {
 }
 
 export async function getCategories() {
-  const response = await fetch(`${API_URL}/categories`, {
+  const response = await fetch(`${API_BASE_URL}/categories`, {
     headers: getAuthHeaders(),
   });
 
@@ -19,7 +19,7 @@ export async function getCategories() {
 }
 
 export async function createCategory({ name, kind = "expense", icon, color }) {
-  const response = await fetch(`${API_URL}/categories`, {
+  const response = await fetch(`${API_BASE_URL}/categories`, {
     method: "POST",
     headers: getAuthHeaders(),
     body: JSON.stringify({
@@ -39,7 +39,7 @@ export async function getBudgets(periodMonth) {
     ? `?period_month=${encodeURIComponent(periodMonth)}`
     : "";
 
-  const response = await fetch(`${API_URL}/budgets${query}`, {
+  const response = await fetch(`${API_BASE_URL}/budgets${query}`, {
     headers: getAuthHeaders(),
   });
 
@@ -53,7 +53,7 @@ export async function createBudget({
   amountDollars,
   notes,
 }) {
-  const response = await fetch(`${API_URL}/budgets`, {
+  const response = await fetch(`${API_BASE_URL}/budgets`, {
     method: "POST",
     headers: getAuthHeaders(),
     body: JSON.stringify({
@@ -70,7 +70,17 @@ export async function createBudget({
 }
 
 export async function deleteBudget(budgetId) {
-  const response = await fetch(`${API_URL}/budgets/${budgetId}`, {
+  const response = await fetch(`${API_BASE_URL}/budgets/${budgetId}`, {
+    method: "DELETE",
+    headers: getAuthHeaders(),
+  });
+
+  const data = await response.json();
+  return data;
+}
+
+export async function deleteCategory(categoryId) {
+  const response = await fetch(`${API_BASE_URL}/categories/${categoryId}`, {
     method: "DELETE",
     headers: getAuthHeaders(),
   });

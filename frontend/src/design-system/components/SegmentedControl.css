@@ -1,0 +1,30 @@
+.ds-segmented {
+  display: inline-flex;
+  gap: var(--space-1);
+  padding: var(--space-2);
+  border-radius: var(--radius-lg);
+  background: var(--surface2);
+  border: var(--border-hairline-soft);
+}
+
+.ds-segmented__option {
+  border: none;
+  padding: 9px 18px;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--ink2);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.ds-segmented__option:hover {
+  color: var(--ink);
+}
+
+.ds-segmented__option--active,
+.ds-segmented__option--active:hover {
+  background: var(--btn);
+  color: var(--btnink);
+}

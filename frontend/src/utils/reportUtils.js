@@ -1,20 +1,14 @@
 import { getMonthKey, monthKeyToLabel } from "./moneyUtils";
 
 const FALLBACK_COLORS = [
-  "#7c3aed",
-  "#0ea5e9",
-  "#10b981",
-  "#f59e0b",
-  "#ec4899",
-  "#6366f1",
-  "#14b8a6",
-  "#f97316",
-  "#ef4444",
-  "#8b5cf6",
-  "#06b6d4",
-  "#84cc16",
-  "#eab308",
-  "#d946ef",
+  "#3f6f4f", // groceries
+  "#c26a3d", // dining
+  "#4a6b8a", // transport
+  "#8a6d9a", // shopping
+  "#b08a2e", // fun
+  "#5f6f5a", // housing
+  "#3f8078", // utilities
+  "#a05a7a", // subscriptions
 ];
 
 function isExpense(transaction) {
