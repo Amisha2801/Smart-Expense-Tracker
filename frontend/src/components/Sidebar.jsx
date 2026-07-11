@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import {
   Wallet,
@@ -6,16 +7,56 @@ import {
   PiggyBank,
   ChartPie,
   Landmark,
+  Tags,
   LogIn,
   UserPlus,
   LogOut,
+  Sun,
+  Moon,
 } from "lucide-react";
 import { NavItem } from "../design-system/components";
 import "./Sidebar.css";
 
+function getUserFromToken() {
+  try {
+    const token = localStorage.getItem("token");
+    if (!token) return null;
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    return payload;
+  } catch {
+    return null;
+  }
+}
+
+function getInitials(name = "") {
+  return name
+    .split(" ")
+    .slice(0, 2)
+    .map(w => w[0]?.toUpperCase() ?? "")
+    .join("");
+}
+
 function Sidebar() {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
+  const user = getUserFromToken();
+
+  const displayName = user?.name || user?.email?.split("@")[0] || "User";
+  const displayEmail = user?.email || "";
+  const initials = getInitials(user?.name || displayName);
+
+  const [theme, setTheme] = useState(
+    () => localStorage.getItem("theme") || document.documentElement.dataset.theme || "light"
+  );
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme;
+    localStorage.setItem("theme", theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(t => (t === "light" ? "dark" : "light"));
+  };
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -42,7 +83,7 @@ function Sidebar() {
             <NavItem as={NavLink} to="/budget" icon={<PiggyBank />} label="Budget" />
             <NavItem as={NavLink} to="/reports" icon={<ChartPie />} label="Reports" />
             <NavItem as={NavLink} to="/accounts" icon={<Landmark />} label="Accounts" />
-            <NavItem icon={<LogOut />} label="Logout" onClick={handleLogout} />
+            <NavItem as={NavLink} to="/categories" icon={<Tags />} label="Categories" />
           </>
         ) : (
           <>
@@ -52,9 +93,35 @@ function Sidebar() {
         )}
       </nav>
 
-      <div className="sidebar-footer">
-        <Wallet size={16} />
-        <p>Stay on track and achieve your goals.</p>
+      <div className="sidebar-bottom">
+        <button className="sidebar-theme-toggle" onClick={toggleTheme}>
+          <span className="sidebar-theme-toggle__left">
+            {theme === "light" ? <Sun size={16} /> : <Moon size={16} />}
+            Theme
+          </span>
+          <span className="sidebar-theme-toggle__right">
+            {theme === "light" ? "Light" : "Dark"}
+          </span>
+        </button>
+
+        {token && (
+          <div className="sidebar-profile">
+            <div className="sidebar-profile__avatar">{initials || "U"}</div>
+            <div className="sidebar-profile__info">
+              <div className="sidebar-profile__name">{displayName}</div>
+              {displayEmail && (
+                <div className="sidebar-profile__email">{displayEmail}</div>
+              )}
+            </div>
+            <button
+              className="sidebar-profile__logout"
+              onClick={handleLogout}
+              title="Log out"
+            >
+              <LogOut size={16} />
+            </button>
+          </div>
+        )}
       </div>
     </aside>
   );

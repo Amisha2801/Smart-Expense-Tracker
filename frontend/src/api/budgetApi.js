@@ -78,3 +78,13 @@ export async function deleteBudget(budgetId) {
   const data = await response.json();
   return data;
 }
+
+export async function deleteCategory(categoryId) {
+  const response = await fetch(`${API_BASE_URL}/categories/${categoryId}`, {
+    method: "DELETE",
+    headers: getAuthHeaders(),
+  });
+
+  const data = await response.json();
+  return data;
+}

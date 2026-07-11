@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { loginUser } from "../api/authApi";
-import { useNavigate } from "react-router-dom";
-import { Card, TextField, Button, StatusBanner } from "../design-system/components";
+import { useNavigate, Link } from "react-router-dom";
+import { Wallet, PiggyBank, ChartPie, Zap } from "lucide-react";
+import { TextField, Button, StatusBanner } from "../design-system/components";
+import "./Auth.css";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -41,37 +43,84 @@ function Login() {
   };
 
   return (
-    <div className="page--centered">
-      <Card elevated padding="42px" style={{ width: "100%", maxWidth: 420 }}>
-        <div className="auth-card-header">
-          <h1 style={{ font: "var(--text-h1-hero)" }}>Welcome back</h1>
-          <p>Login to your Ledger account</p>
+    <div className="auth-page">
+      {/* Brand panel */}
+      <div className="auth-brand">
+        <div className="auth-brand__logo">
+          <div className="auth-brand__mark">
+            <Wallet size={20} />
+          </div>
+          <span className="auth-brand__name">Ledger</span>
         </div>
 
-        <StatusBanner error={error} message={message} />
+        <div className="auth-brand__body">
+          <h2 className="auth-brand__headline">
+            Money,<br />minus the anxiety.
+          </h2>
+          <p className="auth-brand__sub">
+            Give every dollar a job, watch your envelopes fill, and always know
+            what&apos;s safe to spend.
+          </p>
+        </div>
 
-        <form className="stacked-form" onSubmit={handleLogin}>
-          <TextField
-            type="email"
-            placeholder="Email address"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
+        <ul className="auth-brand__features">
+          <li>
+            <span className="auth-brand__feature-icon">
+              <PiggyBank size={15} style={{ color: "var(--pos)" }} />
+            </span>
+            Envelope budgeting that rolls over
+          </li>
+          <li>
+            <span className="auth-brand__feature-icon">
+              <ChartPie size={15} style={{ color: "var(--cat-trans)" }} />
+            </span>
+            Reports that read like a story
+          </li>
+          <li>
+            <span className="auth-brand__feature-icon">
+              <Zap size={15} style={{ color: "var(--cat-dine)" }} />
+            </span>
+            Two-tap expense logging
+          </li>
+        </ul>
+      </div>
 
-          <TextField
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
+      {/* Form panel */}
+      <div className="auth-form-panel">
+        <div className="auth-form-inner">
+          <h1 className="auth-form__title">Welcome back</h1>
+          <p className="auth-form__sub">Sign in to pick up where you left off.</p>
 
-          <Button type="submit">Login</Button>
-        </form>
+          <StatusBanner error={error} message={message} />
 
-        <p className="auth-footnote">
-          Forgot password? This feature will be added later.
-        </p>
-      </Card>
+          <form className="stacked-form" onSubmit={handleLogin}>
+            <TextField
+              label="Email"
+              type="email"
+              placeholder="you@email.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+
+            <TextField
+              label="Password"
+              type="password"
+              placeholder="Your password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+
+            <Button type="submit">Log in</Button>
+          </form>
+
+          <p className="auth-footnote">
+            New to Ledger?{" "}
+            <Link to="/signup" className="auth-footnote__link">
+              Create an account
+            </Link>
+          </p>
+        </div>
+      </div>
     </div>
   );
 }

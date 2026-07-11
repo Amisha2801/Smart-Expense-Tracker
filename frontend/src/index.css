@@ -345,12 +345,58 @@ textarea {
   cursor: pointer;
 }
 
+/* Top Merchants (Reports page) */
+.top-merchants-header {
+  padding: 28px 30px 0;
+}
+
+.top-merchants-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding: 0 8px 8px;
+}
+
+.top-merchant-row {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 12px 18px;
+  border-top: 1px solid var(--line2);
+}
+
+.top-merchant-row__icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  background: var(--surface2);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.top-merchant-row__name {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.top-merchant-row__amount {
+  font-size: 14px;
+  color: var(--ink2);
+  white-space: nowrap;
+}
+
 @media (max-width: 900px) {
   .stat-grid,
   .two-col,
   .chart-grid,
   .form-grid,
   .form-grid--triple {
+    grid-template-columns: 1fr;
+  }
+
+  .top-merchants-grid {
     grid-template-columns: 1fr;
   }
 }
