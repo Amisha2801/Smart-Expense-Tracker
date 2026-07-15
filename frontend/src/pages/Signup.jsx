@@ -1,8 +1,14 @@
 import { useState } from "react";
-import { registerUser } from "../api/authApi";
 import { Link } from "react-router-dom";
 import { Wallet } from "lucide-react";
-import { TextField, Button, StatusBanner } from "../design-system/components";
+
+import { registerUser } from "../api/authApi";
+import {
+  TextField,
+  Button,
+  StatusBanner,
+} from "../design-system/components";
+
 import "./Auth.css";
 
 function Signup() {
@@ -13,8 +19,24 @@ function Signup() {
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
 
+  const passwordRules = {
+    minimumLength: password.length >= 8,
+    uppercase: /[A-Z]/.test(password),
+    lowercase: /[a-z]/.test(password),
+    number: /[0-9]/.test(password),
+    specialCharacter: /[!@#$%^&*(),.?":{}|<>]/.test(password),
+  };
+
+  const passwordIsValid = Object.values(passwordRules).every(Boolean);
+
   const handleSignup = async (e) => {
     e.preventDefault();
+
+    if (!passwordIsValid) {
+      setError("Please make sure your password meets all requirements.");
+      setMessage("");
+      return;
+    }
 
     if (password !== confirmPassword) {
       setError("Passwords do not match.");
@@ -34,9 +56,15 @@ function Signup() {
       }
 
       setMessage("Account created successfully. You can now log in.");
+
+      setName("");
+      setEmail("");
+      setPassword("");
+      setConfirmPassword("");
     } catch (err) {
       console.error("Signup failed:", err);
-      setError("Unable to connect to the server. Please try again later.");
+      setError(err.message || "Unable to create account. Please try again.");
+      setMessage("");
     }
   };
 
@@ -48,13 +76,17 @@ function Signup() {
           <div className="auth-brand__mark">
             <Wallet size={20} />
           </div>
+
           <span className="auth-brand__name">Ledger</span>
         </div>
 
         <div className="auth-brand__body">
           <h2 className="auth-brand__headline">
-            Start with<br />a clear month.
+            Start with
+            <br />
+            a clear month.
           </h2>
+
           <p className="auth-brand__sub">
             Set up in under a minute. Add your accounts, sketch a few
             envelopes, and you&apos;re tracking.
@@ -63,9 +95,13 @@ function Signup() {
 
         <div className="auth-brand__testimonial">
           <p className="auth-brand__quote">
-            &ldquo;Finally a budget I actually keep open. The envelopes just make sense.&rdquo;
+            &ldquo;Finally a budget I actually keep open. The envelopes just
+            make sense.&rdquo;
           </p>
-          <p className="auth-brand__quote-attr">— A very organized beta user</p>
+
+          <p className="auth-brand__quote-attr">
+            — A very organized beta user
+          </p>
         </div>
       </div>
 
@@ -73,7 +109,10 @@ function Signup() {
       <div className="auth-form-panel">
         <div className="auth-form-inner">
           <h1 className="auth-form__title">Create your account</h1>
-          <p className="auth-form__sub">Free while in development.</p>
+
+          <p className="auth-form__sub">
+            Free while in development.
+          </p>
 
           <StatusBanner error={error} message={message} />
 
@@ -97,10 +136,59 @@ function Signup() {
             <TextField
               label="Password"
               type="password"
-              placeholder="At least 8 characters"
+              placeholder="Create a strong password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
+
+            <div className="password-rules">
+              <p className="password-rules__title">
+                Your password must contain:
+              </p>
+
+              <p
+                className={`password-rule ${
+                  passwordRules.minimumLength ? "password-rule--met" : ""
+                }`}
+              >
+                {passwordRules.minimumLength ? "✓" : "○"} At least 8 characters
+              </p>
+
+              <p
+                className={`password-rule ${
+                  passwordRules.uppercase ? "password-rule--met" : ""
+                }`}
+              >
+                {passwordRules.uppercase ? "✓" : "○"} One uppercase letter
+              </p>
+
+              <p
+                className={`password-rule ${
+                  passwordRules.lowercase ? "password-rule--met" : ""
+                }`}
+              >
+                {passwordRules.lowercase ? "✓" : "○"} One lowercase letter
+              </p>
+
+              <p
+                className={`password-rule ${
+                  passwordRules.number ? "password-rule--met" : ""
+                }`}
+              >
+                {passwordRules.number ? "✓" : "○"} One number
+              </p>
+
+              <p
+                className={`password-rule ${
+                  passwordRules.specialCharacter
+                    ? "password-rule--met"
+                    : ""
+                }`}
+              >
+                {passwordRules.specialCharacter ? "✓" : "○"} One special
+                character
+              </p>
+            </div>
 
             <TextField
               label="Confirm password"
@@ -110,7 +198,9 @@ function Signup() {
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
 
-            <Button type="submit">Create account</Button>
+            <Button type="submit">
+              Create account
+            </Button>
           </form>
 
           <p className="auth-footnote">

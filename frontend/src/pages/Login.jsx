@@ -110,7 +110,18 @@ function Login() {
               onChange={(e) => setPassword(e.target.value)}
             />
 
+            <div style={{ textAlign: "right", marginTop: "-6px", marginBottom: "14px" }}>
+              <Link
+                to="/forgot-password"
+                className="auth-footnote__link"
+                style={{ fontSize: "0.9rem" }}
+              >
+                Forgot Password?
+              </Link>
+            </div>
+
             <Button type="submit">Log in</Button>
+         
           </form>
 
           <p className="auth-footnote">

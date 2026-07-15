@@ -1,4 +1,6 @@
 import bcrypt from "bcrypt";
+import crypto from "crypto";
+import { sendPasswordResetEmail } from "./emailService.js";
 
 import { AppError } from "../utils/AppError.js";
 import { signToken } from "../utils/jwt.js";
@@ -51,4 +53,73 @@ export async function getMe(userId) {
   assertUserExists(user);
 
   return { id: user.id, email: user.email, name: user.name };
+}
+
+export async function requestPasswordReset(email) {
+  if (!email) {
+    throw AppError.badRequest("Email is required");
+  }
+
+  const user = await userRepository.findByEmail(email);
+
+  // Return the same response even if the email does not exist.
+  // This prevents people from checking which emails are registered.
+  if (!user) {
+    return;
+  }
+
+  const resetToken = crypto.randomBytes(32).toString("hex");
+
+  const tokenHash = crypto
+    .createHash("sha256")
+    .update(resetToken)
+    .digest("hex");
+
+  const expiresAt = new Date(Date.now() + 30 * 60 * 1000);
+
+  await userRepository.createPasswordResetToken({
+    userId: user.id,
+    tokenHash,
+    expiresAt,
+  });
+
+  const resetLink =
+    `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
+
+  await sendPasswordResetEmail({
+    to: user.email,
+    resetLink,
+  });
+}
+
+export async function resetPassword(token, newPassword) {
+  if (!token || !newPassword) {
+    throw AppError.badRequest("Token and new password are required");
+  }
+
+  assertRegisterInput({
+    email: "reset@example.com",
+    password: newPassword,
+    name: "Reset User",
+  });
+
+  const tokenHash = crypto
+    .createHash("sha256")
+    .update(token)
+    .digest("hex");
+
+  const resetRecord = await userRepository.findPasswordResetToken(tokenHash);
+
+  if (!resetRecord) {
+    throw AppError.badRequest("Reset link is invalid or has expired.");
+  }
+
+  const passwordHash = await bcrypt.hash(newPassword, 10);
+
+  await userRepository.updatePassword(
+    resetRecord.user_id,
+    passwordHash
+  );
+
+  await userRepository.markPasswordResetTokenUsed(resetRecord.id);
 }

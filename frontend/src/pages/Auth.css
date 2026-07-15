@@ -158,3 +158,28 @@
     display: none;
   }
 }
+
+.password-rules {
+  margin-top: -4px;
+  margin-bottom: 8px;
+  padding: 12px;
+  background: #f8fafc;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  font-size: 0.9rem;
+}
+
+.password-rules__title {
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.password-rule {
+  margin: 4px 0;
+  color: #6b7280;
+}
+
+.password-rule--met {
+  color: #16a34a;
+  font-weight: 600;
+}

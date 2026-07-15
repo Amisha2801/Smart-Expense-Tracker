@@ -14,3 +14,22 @@ export async function getMe(req, res) {
   const user = await userService.getMe(req.user.id);
   res.json({ data: user });
 }
+
+export async function forgotPassword(req, res) {
+  await userService.requestPasswordReset(req.body.email);
+
+  res.json({
+    message:
+      "If an account exists with that email, a password reset link has been sent.",
+  });
+}
+
+export async function resetPassword(req, res) {
+  const { token, password } = req.body;
+
+  await userService.resetPassword(token, password);
+
+  res.json({
+    message: "Password has been reset successfully.",
+  });
+}

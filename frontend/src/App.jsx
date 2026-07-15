@@ -1,4 +1,7 @@
+import ForgotPassword from "./pages/ForgotPassword";
+import SessionTimeout from "./components/SessionTimeout";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import ResetPassword from "./pages/ResetPassword";
 
 import Sidebar from "./components/Sidebar";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -12,7 +15,7 @@ import Categories from "./pages/Categories";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 
-const AUTH_ROUTES = ["/login", "/signup"];
+const AUTH_ROUTES = ["/login", "/signup", "/forgot-password", "/reset-password"];
 
 function AppShell() {
   const { pathname } = useLocation();
@@ -23,6 +26,8 @@ function AppShell() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
       </Routes>
     );
   }
@@ -32,6 +37,7 @@ function AppShell() {
       <Sidebar />
       <div className="app-main">
         <Routes>
+          <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route
             path="/"
             element={
@@ -91,6 +97,7 @@ function AppShell() {
 function App() {
   return (
     <BrowserRouter>
+      <SessionTimeout />
       <AppShell />
     </BrowserRouter>
   );
