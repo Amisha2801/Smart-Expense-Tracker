@@ -160,3 +160,9 @@
   background: var(--surface2);
   color: var(--ink);
 }
+
+@media (max-width: 900px) {
+  .sidebar {
+    display: none;
+  }
+}
