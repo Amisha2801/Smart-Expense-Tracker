@@ -400,3 +400,16 @@ textarea {
     grid-template-columns: 1fr;
   }
 }
+
+@media (max-width: 900px) {
+  .app-shell {
+    display: block;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .app-main {
+    width: 100%;
+    min-width: 0;
+  }
+}
