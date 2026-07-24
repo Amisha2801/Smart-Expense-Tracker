@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Wallet } from "lucide-react";
 
 import { registerUser } from "../api/authApi";
@@ -12,7 +12,6 @@ import {
 import "./Auth.css";
 
 function Signup() {
-  const location = useLocation();
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -22,15 +21,15 @@ function Signup() {
   const [message, setMessage] = useState("");
 
   useEffect(() => {
-    if (location.state?.accountDeleted) {
-      setMessage("Your account has been deleted successfully.");
+    const accountDeletedMessage = sessionStorage.getItem(
+      "accountDeletedMessage"
+    );
 
-      navigate(location.pathname, {
-        replace: true,
-        state: null,
-      });
+    if (accountDeleted) {
+      setMessage(accountDeletedMessage);
+      sessionStorage.removeItem("accountDeletedMessage");
     }
-  }, [location.pathname, location.state, navigate]);
+  }, []);
 
   const passwordRules = {
     minimumLength: password.length >= 8,

@@ -173,11 +173,13 @@ function Sidebar() {
       localStorage.removeItem("token");
       setDeleteDialogOpen(false);
 
+      sessionStorage.setItem(
+        "accountDeletedMessage",
+        "Your account has been deleted successfully."
+      );
+
       navigate("/signup", {
         replace: true,
-        state: {
-          accountDeleted: true,
-        },
       });
       
     } catch (error) {
