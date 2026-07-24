@@ -1,24 +1,13 @@
-import nodemailer from "nodemailer";
+import { Resend } from "resend";
 
-const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 587,
-  secure: false,
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-  connectionTimeout: 15000,
-  greetingTimeout: 15000,
-  socketTimeout: 20000,
-});
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function sendPasswordResetEmail({
   to,
   resetLink,
 }) {
-  await transporter.sendMail({
-    from: `"Ledger Expense Tracker" <${process.env.EMAIL_USER}>`,
+  await resend.emails.send({
+    from: "onboarding@resend.dev",
     to,
     subject: "Reset your Ledger password",
     html: `
@@ -37,12 +26,12 @@ export async function sendPasswordResetEmail({
           <a
             href="${resetLink}"
             style="
-              display: inline-block;
-              padding: 12px 18px;
-              background: #111827;
-              color: white;
-              text-decoration: none;
-              border-radius: 6px;
+              display:inline-block;
+              padding:12px 18px;
+              background:#111827;
+              color:white;
+              text-decoration:none;
+              border-radius:6px;
             "
           >
             Reset Password
@@ -54,7 +43,7 @@ export async function sendPasswordResetEmail({
         </p>
 
         <p>
-          If you did not request a password reset, you can ignore this email.
+          If you did not request this password reset, you can safely ignore this email.
         </p>
       </div>
     `,
