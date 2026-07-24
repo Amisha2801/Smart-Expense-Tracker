@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { Link } from "react-router-dom";
 import { Wallet } from "lucide-react";
 
 import { registerUser } from "../api/authApi";
@@ -12,24 +12,12 @@ import {
 import "./Auth.css";
 
 function Signup() {
-  const navigate = useNavigate();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
-
-  useEffect(() => {
-    const accountDeletedMessage = sessionStorage.getItem(
-      "accountDeletedMessage"
-    );
-
-    if (accountDeleted) {
-      setMessage(accountDeletedMessage);
-      sessionStorage.removeItem("accountDeletedMessage");
-    }
-  }, []);
 
   const passwordRules = {
     minimumLength: password.length >= 8,
