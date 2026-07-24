@@ -175,7 +175,11 @@ function Sidebar() {
 
       navigate("/signup", {
         replace: true,
+        state: {
+          accountDeleted: true,
+        },
       });
+      
     } catch (error) {
       setDeleteError(
         error.message ||

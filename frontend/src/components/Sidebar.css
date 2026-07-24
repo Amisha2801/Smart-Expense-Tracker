@@ -358,3 +358,76 @@
     transition: none;
   }
 }
+
+.sidebar-delete-account {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 10px 12px;
+  border: 1px solid color-mix(in srgb, var(--neg) 35%, var(--line));
+  border-radius: 10px;
+  background: transparent;
+  color: var(--neg);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    border-color 0.15s;
+}
+
+.sidebar-delete-account:hover {
+  background: color-mix(in srgb, var(--neg) 8%, transparent);
+  border-color: var(--neg);
+}
+
+.delete-account-warning {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid color-mix(in srgb, var(--neg) 35%, var(--line));
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--neg) 7%, var(--surface));
+  color: var(--neg);
+}
+
+.delete-account-warning svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.delete-account-warning strong {
+  display: block;
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+
+.delete-account-warning p {
+  color: var(--ink2);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.delete-account-confirm {
+  min-height: 42px;
+  padding: 10px 16px;
+  border: 1px solid var(--neg);
+  border-radius: 10px;
+  background: var(--neg);
+  color: white;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.delete-account-confirm:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+.delete-account-confirm:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}

@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Wallet } from "lucide-react";
 
 import { registerUser } from "../api/authApi";
@@ -12,12 +12,25 @@ import {
 import "./Auth.css";
 
 function Signup() {
+  const location = useLocation();
+  const navigate = useNavigate();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    if (location.state?.accountDeleted) {
+      setMessage("Your account has been deleted successfully.");
+
+      navigate(location.pathname, {
+        replace: true,
+        state: null,
+      });
+    }
+  }, [location.pathname, location.state, navigate]);
 
   const passwordRules = {
     minimumLength: password.length >= 8,
