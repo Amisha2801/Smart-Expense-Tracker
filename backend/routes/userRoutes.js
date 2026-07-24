@@ -8,8 +8,25 @@ const router = Router();
 
 router.post("/register", asyncHandler(userController.register));
 router.post("/login", asyncHandler(userController.login));
-router.post("/forgot-password", asyncHandler(userController.forgotPassword));
-router.post("/reset-password", asyncHandler(userController.resetPassword));
-router.get("/me", authenticate, asyncHandler(userController.getMe));
+router.post(
+  "/forgot-password",
+  asyncHandler(userController.forgotPassword)
+);
+router.post(
+  "/reset-password",
+  asyncHandler(userController.resetPassword)
+);
+
+router.get(
+  "/me",
+  authenticate,
+  asyncHandler(userController.getMe)
+);
+
+router.delete(
+  "/me",
+  authenticate,
+  asyncHandler(userController.deleteMe)
+);
 
 export default router;

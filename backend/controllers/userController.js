@@ -2,17 +2,39 @@ import * as userService from "../services/userService.js";
 
 export async function register(req, res) {
   const user = await userService.register(req.body);
-  res.status(201).json({ data: user });
+
+  res.status(201).json({
+    data: user,
+  });
 }
 
 export async function login(req, res) {
   const result = await userService.login(req.body);
-  res.json({ data: result });
+
+  res.json({
+    data: result,
+  });
 }
 
 export async function getMe(req, res) {
   const user = await userService.getMe(req.user.id);
-  res.json({ data: user });
+
+  res.json({
+    data: user,
+  });
+}
+
+export async function deleteMe(req, res) {
+  const { password } = req.body;
+
+  await userService.deleteAccount({
+    userId: req.user.id,
+    password,
+  });
+
+  res.json({
+    message: "Your account and all associated data have been deleted.",
+  });
 }
 
 export async function forgotPassword(req, res) {

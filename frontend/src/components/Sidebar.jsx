@@ -19,8 +19,18 @@ import {
   Moon,
   Menu,
   X,
+  Trash2,
 } from "lucide-react";
-import { NavItem } from "../design-system/components";
+
+import {
+  NavItem,
+  Dialog,
+  TextField,
+  StatusBanner,
+  Button,
+} from "../design-system/components";
+
+import { deleteUserAccount } from "../api/authApi";
 import "./Sidebar.css";
 
 function getUserFromToken() {
@@ -31,8 +41,7 @@ function getUserFromToken() {
       return null;
     }
 
-    const payload = JSON.parse(atob(token.split(".")[1]));
-    return payload;
+    return JSON.parse(atob(token.split(".")[1]));
   } catch {
     return null;
   }
@@ -63,6 +72,13 @@ function Sidebar() {
 
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
+  const [deleteDialogOpen, setDeleteDialogOpen] =
+    useState(false);
+  const [deletePassword, setDeletePassword] =
+    useState("");
+  const [deleteError, setDeleteError] = useState("");
+  const [isDeleting, setIsDeleting] = useState(false);
+
   const [theme, setTheme] = useState(
     () =>
       localStorage.getItem("theme") ||
@@ -75,16 +91,10 @@ function Sidebar() {
     localStorage.setItem("theme", theme);
   }, [theme]);
 
-  /*
-   * Close the mobile drawer whenever the route changes.
-   */
   useEffect(() => {
     setIsMobileOpen(false);
   }, [location.pathname]);
 
-  /*
-   * Prevent the page behind the drawer from scrolling.
-   */
   useEffect(() => {
     const previousOverflow = document.body.style.overflow;
 
@@ -97,9 +107,6 @@ function Sidebar() {
     };
   }, [isMobileOpen]);
 
-  /*
-   * Allow the Escape key to close the mobile drawer.
-   */
   useEffect(() => {
     const handleEscape = (event) => {
       if (event.key === "Escape") {
@@ -130,6 +137,55 @@ function Sidebar() {
     navigate("/login");
   };
 
+  const openDeleteDialog = () => {
+    setIsMobileOpen(false);
+    setDeletePassword("");
+    setDeleteError("");
+    setDeleteDialogOpen(true);
+  };
+
+  const closeDeleteDialog = () => {
+    if (isDeleting) {
+      return;
+    }
+
+    setDeleteDialogOpen(false);
+    setDeletePassword("");
+    setDeleteError("");
+  };
+
+  const handleDeleteAccount = async (event) => {
+    event.preventDefault();
+
+    if (!deletePassword) {
+      setDeleteError(
+        "Enter your current password to continue."
+      );
+      return;
+    }
+
+    try {
+      setIsDeleting(true);
+      setDeleteError("");
+
+      await deleteUserAccount(deletePassword);
+
+      localStorage.removeItem("token");
+      setDeleteDialogOpen(false);
+
+      navigate("/signup", {
+        replace: true,
+      });
+    } catch (error) {
+      setDeleteError(
+        error.message ||
+          "Unable to delete your account."
+      );
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   return (
     <>
       {/* Mobile top bar */}
@@ -140,7 +196,10 @@ function Sidebar() {
           </div>
 
           <div className="mobile-topbar__text">
-            <div className="mobile-topbar__name">Ledger</div>
+            <div className="mobile-topbar__name">
+              Ledger
+            </div>
+
             <div className="mobile-topbar__tagline">
               Expense tracker
             </div>
@@ -163,7 +222,9 @@ function Sidebar() {
       <button
         type="button"
         className={`sidebar-backdrop${
-          isMobileOpen ? " sidebar-backdrop--visible" : ""
+          isMobileOpen
+            ? " sidebar-backdrop--visible"
+            : ""
         }`}
         onClick={() => setIsMobileOpen(false)}
         aria-label="Close navigation menu"
@@ -185,7 +246,10 @@ function Sidebar() {
             </div>
 
             <div className="sidebar-logo__text">
-              <div className="sidebar-logo__name">Ledger</div>
+              <div className="sidebar-logo__name">
+                Ledger
+              </div>
+
               <div className="sidebar-logo__tagline">
                 Expense tracker
               </div>
@@ -297,36 +361,108 @@ function Sidebar() {
           </button>
 
           {token && (
-            <div className="sidebar-profile">
-              <div className="sidebar-profile__avatar">
-                {initials || "U"}
-              </div>
-
-              <div className="sidebar-profile__info">
-                <div className="sidebar-profile__name">
-                  {displayName}
-                </div>
-
-                {displayEmail && (
-                  <div className="sidebar-profile__email">
-                    {displayEmail}
-                  </div>
-                )}
-              </div>
-
+            <>
               <button
                 type="button"
-                className="sidebar-profile__logout"
-                onClick={handleLogout}
-                title="Log out"
-                aria-label="Log out"
+                className="sidebar-delete-account"
+                onClick={openDeleteDialog}
               >
-                <LogOut size={16} />
+                <Trash2 size={16} />
+                Delete account
               </button>
-            </div>
+
+              <div className="sidebar-profile">
+                <div className="sidebar-profile__avatar">
+                  {initials || "U"}
+                </div>
+
+                <div className="sidebar-profile__info">
+                  <div className="sidebar-profile__name">
+                    {displayName}
+                  </div>
+
+                  {displayEmail && (
+                    <div className="sidebar-profile__email">
+                      {displayEmail}
+                    </div>
+                  )}
+                </div>
+
+                <button
+                  type="button"
+                  className="sidebar-profile__logout"
+                  onClick={handleLogout}
+                  title="Log out"
+                  aria-label="Log out"
+                >
+                  <LogOut size={16} />
+                </button>
+              </div>
+            </>
           )}
         </div>
       </aside>
+
+      <Dialog
+        open={deleteDialogOpen}
+        onClose={closeDeleteDialog}
+        title="Delete your account?"
+      >
+        <form
+          className="stacked-form"
+          onSubmit={handleDeleteAccount}
+        >
+          <div className="delete-account-warning">
+            <Trash2 size={20} />
+
+            <div>
+              <strong>This action is permanent.</strong>
+
+              <p>
+                Your login, financial accounts,
+                transactions, budgets, categories and
+                password-reset records will all be deleted.
+                This cannot be undone.
+              </p>
+            </div>
+          </div>
+
+          <TextField
+            label="Current password"
+            type="password"
+            value={deletePassword}
+            onChange={(event) =>
+              setDeletePassword(event.target.value)
+            }
+            placeholder="Enter your current password"
+            autoComplete="current-password"
+            disabled={isDeleting}
+          />
+
+          <StatusBanner error={deleteError} />
+
+          <div className="ds-dialog__footer">
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={closeDeleteDialog}
+              disabled={isDeleting}
+            >
+              Cancel
+            </Button>
+
+            <button
+              type="submit"
+              className="delete-account-confirm"
+              disabled={isDeleting}
+            >
+              {isDeleting
+                ? "Deleting…"
+                : "Permanently delete account"}
+            </button>
+          </div>
+        </form>
+      </Dialog>
     </>
   );
 }
