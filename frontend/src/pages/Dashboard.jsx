@@ -47,12 +47,19 @@ function txDateLabel(dateStr) {
 function getUserName() {
   try {
     const token = localStorage.getItem("token");
-    if (!token) return "there";
-    const payload = JSON.parse(atob(token.split(".")[1]));
-    if (payload.name) return payload.name.split(" ")[0];
-    if (payload.email) return payload.email.split("@")[0];
-  } catch {}
-  return "there";
+
+    if (!token) {
+      return "there";
+    }
+
+    const payload = JSON.parse(
+      atob(token.split(".")[1])
+    );
+
+    return payload.name?.trim() || "there";
+  } catch {
+    return "there";
+  }
 }
 
 function Dashboard() {
