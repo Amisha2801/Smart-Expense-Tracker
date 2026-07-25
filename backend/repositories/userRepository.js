@@ -4,6 +4,7 @@ export async function findByEmail(email) {
   const [rows] = await pool.query(
     `SELECT
        id,
+       name,
        email,
        password_hash,
        name,
