@@ -31,6 +31,10 @@ function Login() {
         localStorage.setItem("token", data.data.token);
       }
 
+      if (data.data?.user?.name){
+        localStorage.setItem("userName", data.data.user.name);
+      }
+      
       setMessage("Login successful.");
 
       setTimeout(() => {

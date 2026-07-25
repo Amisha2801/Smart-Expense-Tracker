@@ -45,21 +45,13 @@ function txDateLabel(dateStr) {
 }
 
 function getUserName() {
-  try {
-    const token = localStorage.getItem("token");
+  const savedName = localStorage.getItem("userName");
 
-    if (!token) {
-      return "there";
-    }
-
-    const payload = JSON.parse(
-      atob(token.split(".")[1])
-    );
-
-    return payload.name?.trim() || "there";
-  } catch {
-    return "there";
+  if (savedName) {
+    return savedName;
   }
+
+  return "there";
 }
 
 function Dashboard() {
