@@ -10,7 +10,7 @@ McMaster University
 **Frontend (Access website from here):**  
 https://smart-expense-tracker-rouge-omega.vercel.app
 
-**Application:**  
+**Backend API (Hosted on Railway):**  
 https://smart-expense-tracker-production-0638.up.railway.app
 
 > The application is fully deployed and can be accessed through the production website mentioned here.
