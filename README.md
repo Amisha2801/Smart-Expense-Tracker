@@ -7,13 +7,13 @@ McMaster University
 
 ## Live Demo
 
+**Frontend (Access website from here):**  
+https://smart-expense-tracker-rouge-omega.vercel.app
+
 **Application:**  
 https://smart-expense-tracker-production-0638.up.railway.app
 
-**Frontend:**  
-https://smart-expense-tracker-rouge-omega.vercel.app
-
-> The application is fully deployed and can be accessed through the production website above.
+> The application is fully deployed and can be accessed through the production website mentioned here.
 
 ---
 
