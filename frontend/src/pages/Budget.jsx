@@ -191,7 +191,7 @@ function Budget() {
               {readyToAssign < 0 && "–"}
               {formatCents(Math.abs(readyToAssign))}
             </div>
-            <div className="bud-hero-card__label">ready to assign</div>
+            <div className="bud-hero-card__label"></div>
           </div>
         </div>
 
