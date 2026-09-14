@@ -7,13 +7,21 @@ McMaster University
 
 ## Live Demo
 
-**Frontend (Access website from here):**  
+**Frontend Preview:**  
 https://smart-expense-tracker-rouge-omega.vercel.app
+
+> Note: The frontend remains deployed on Vercel, but functionality requiring the backend API is currently unavailable because the original Railway backend and database deployment are offline.
 
 **Backend API (Hosted on Railway):**  
 https://smart-expense-tracker-production-0638.up.railway.app
 
-> The application is fully deployed and can be accessed through the production website mentioned here.
+## Deployment Status
+
+The Smart Expense Tracker was successfully deployed during development using **Vercel** for the frontend and **Railway** for the Node.js backend and MySQL database.
+
+The original Railway deployment is currently offline following the expiration of the project's hosting period. As a result, backend-dependent functionality such as authentication, transactions, budgets, and reports is not currently available through the hosted frontend.
+
+The complete source code, application architecture, database implementation, and deployment configuration remain available in this repository.
 
 ---
 
